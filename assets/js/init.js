@@ -15,6 +15,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     $(window).on('load', function () {
         init();
+        creatCellViewer()
         animate();
     });
 
@@ -47,66 +48,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     // 0 for selectObj ; 1 for moveObj; 2 for rotateObj; 3 for scaleObj
     let selectMode = "0";
     let selectObjDIV, panWordDIV, moveObjDIV, rotateObjDIV, scaleObjDIV;
-
-
-
-
-    let width = $(d3Container).width();
-    let height = $(d3Container).height();
-
-    var gridData = gridData();
-    var grid = d3.select("#cellView")
-        .append("svg")
-        .attr("width",  $(d3Container).width())
-        .attr("height",  $(d3Container).height())
-
-    grid.call(d3.zoom()
-        .extent([[0, 0], [width, height]])
-        .scaleExtent([1, 3])
-        .on("zoom", zoomed));
-
-    const g = grid.append("g");
-
-    var row = g.selectAll(".rowTable")
-        .data(gridData)
-        .enter().append("g")
-        .attr("class", "rowTable");
-
-
-
-    var column = row.selectAll(".sqrTable")
-        .data(function(d) { return d; })
-        .enter().append("rect")
-        .attr("class","sqrTable")
-        .attr("id", function(d, i) {
-            let x = 0;
-            let y = 0;
-            if(d.x > 10){
-                x = Math.floor(d.x / 10);
-            }
-            if(d.y > 10){
-                y = Math.floor(d.y / 10);
-            }
-            return x + "_" + y;
-        })
-        .attr("x", function(d) { return d.x; })
-        .attr("y", function(d) { return d.y; })
-        .attr("width", function(d) { return d.width; })
-        .attr("height", function(d) { return d.height; })
-        .style("fill", "#e6e6e6")
-        .style("stroke", "#222");
-
-    document.getElementById('1_1').style.fill = "#000000";
-
-
-    function zoomed({transform}) {
-        g.attr("transform", transform);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     function init() {
 
@@ -226,15 +167,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         renderer.domElement.addEventListener('click', clickOnCanvas, false);
 
 
-        // dragControls = new DragControls( [cube], camera, renderer.domElement );
-        // dragControls.enabled = false;
-        // dragControls.addEventListener( 'dragstart', function () { controls.enabled = false; } );
-        // dragControls.addEventListener ( 'drag', function( event ){
-        //     event.object.position.y = 10;
-        //     event.object.position.z = Math.floor(event.object.position.z/ 10)* 10 + 5;
-        //     event.object.position.x = Math.floor(event.object.position.x/ 10)* 10 + 5;
-        // })
-        // dragControls.addEventListener( 'dragend', function () { controls.enabled = true; } );
 
         selectObjDIV = document.getElementById('selectObj');
         panWordDIV = document.getElementById('panWord');
@@ -251,7 +183,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('drawPoint').addEventListener("click", xxxx, false);
 
 
-        const geometry2 = new THREE.BoxBufferGeometry(10, 30, 10);
+        const geometry2 = new THREE.BoxBufferGeometry(10, 30, 5);
         geometry2.verticesNeedUpdate = true;
         const material2 = new THREE.MeshBasicMaterial({color: 0x032538});
         let cube2 = new THREE.Mesh(geometry2, material2);
@@ -271,6 +203,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 vertex.fromBufferAttribute(positionAttribute, i);
                 cube2.localToWorld(vertex);
                 if (vertex.y == 0) {
+                    console.log(vertex.x + " | " + vertex.z )
                     vertx.push({
                         x:  vertex.x /10,
                         y: vertex.z /10
@@ -282,6 +215,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                     bresenhamAlgorithm(vert.x, vert.y, vertLoop.x, vertLoop.y)
                 });
             })
+            // bresenhamAlgorithm(0,0, 2,2)
         }
 
         function bresenhamAlgorithm(x1,y1, x2,y2) {
@@ -368,15 +302,16 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                     AllPoints.push({x:x , y:y});
                 }
             }
+            // console.log(AllPoints);
 
             AllPoints.forEach(obj=>{
-                console.log(obj);
+                // console.log(obj);
                 let geometry2 = new THREE.BoxBufferGeometry(10, 50, 10);
                 let material2 = new THREE.MeshBasicMaterial({color: 0x633568});
                 let cube2 = new THREE.Mesh(geometry2, material2);
 
-                cube2.position.x = Math.floor(obj.x) * 10 + 5;
-                cube2.position.z = Math.floor(obj.y) * 10 + 5;
+                cube2.position.x = Math.floor(obj.x) * 10 - 5;
+                cube2.position.z = Math.floor(obj.y) * 10 -5;
 
                 // cube2.position.x = Math.floor(10 * );
                 cube2.position.y = 25;
@@ -387,11 +322,86 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     }
 
-    // function onWindowResize() {
-    //     camera.aspect = window.innerWidth / window.innerHeight;
-    //     camera.updateProjectionMatrix();
-    //     renderer.setSize(window.innerWidth, window.innerHeight);
-    // }
+    function creatCellViewer(){
+        let width = $(d3Container).width();
+        let height = $(d3Container).height();
+
+        var gridData = gridData();
+        var grid = d3.select("#cellView")
+            .append("svg")
+            .attr("width",  $(d3Container).width())
+            .attr("height",  $(d3Container).height())
+
+        grid.call(d3.zoom()
+            .extent([[0, 0], [width, height]])
+            .scaleExtent([1, 3])
+            .on("zoom", zoomed));
+
+        const g = grid.append("g");
+
+        var row = g.selectAll(".rowTable")
+            .data(gridData)
+            .enter().append("g")
+            .attr("class", "rowTable");
+
+        var column = row.selectAll(".sqrTable")
+            .data(function(d) { return d; })
+            .enter().append("rect")
+            .attr("class","sqrTable")
+            .attr("id", function(d, i) {
+                let x = 0;
+                let y = 0;
+                if(d.x > 10){
+                    x = Math.floor(d.x / 10);
+                }
+                if(d.y > 10){
+                    y = Math.floor(d.y / 10);
+                }
+                return x + "_" + y;
+            })
+            .attr("x", function(d) { return d.x; })
+            .attr("y", function(d) { return d.y; })
+            .attr("width", function(d) { return d.width; })
+            .attr("height", function(d) { return d.height; })
+            .style("fill", "#e6e6e6")
+            .style("stroke", "#222");
+
+        document.getElementById('1_1').style.fill = "#000000";
+
+
+        function zoomed({transform}) {
+            g.attr("transform", transform);
+        }
+        function gridData() {
+            var data = new Array();
+            var xpos = 1;
+            var ypos = 1;
+            var width = 10;
+            var height = 10;
+            var click = 0;
+            // iterate for rows
+            for (var row = 0; row < 40; row++) {
+                data.push( new Array() );
+                // iterate for cells/columns inside rows
+                for (var column = 0; column < 40; column++) {
+                    data[row].push({
+                        x: xpos,
+                        y: ypos,
+                        width: width,
+                        height: height,
+                        click: click
+                    })
+                    // increment the x position. I.e. move it over by 50 (width variable)
+                    xpos += width;
+                }
+                // reset the x position after a row is complete
+                xpos = 1;
+                // increment the y position for the next row. Move it down 50 (height variable)
+                ypos += height;
+            }
+            return data;
+        }
+    }
 
     function onResizeContainer() {
         // camera.aspect = window.innerWidth / window.innerHeight;
@@ -405,10 +415,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         mouse.x = (event.offsetX / $(canvasContainer).width()) * 2 - 1;
         mouse.y = -(event.offsetY /$(canvasContainer).height()) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
-        console.log("dkdkkd")
         var intersects = raycaster.intersectObjects(selectableObject, true);
         if (intersects.length > 0) {
-            console.log("1111")
             if (currentSelectedObj != intersects[0].object) {
 
                 if (selectMode == 0) {
@@ -558,101 +566,89 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     }
 
-
-
-    function gridData() {
-        var data = new Array();
-        var xpos = 1;
-        var ypos = 1;
-        var width = 10;
-        var height = 10;
-        var click = 0;
-        // iterate for rows
-        for (var row = 0; row < 40; row++) {
-            data.push( new Array() );
-            // iterate for cells/columns inside rows
-            for (var column = 0; column < 40; column++) {
-                data[row].push({
-                    x: xpos,
-                    y: ypos,
-                    width: width,
-                    height: height,
-                    click: click
-                })
-                // increment the x position. I.e. move it over by 50 (width variable)
-                xpos += width;
-            }
-            // reset the x position after a row is complete
-            xpos = 1;
-            // increment the y position for the next row. Move it down 50 (height variable)
-            ypos += height;
-        }
-        return data;
-    }
-
-    // function wallPositionCalculator(x, y) {
-    //     return ([10 *(parseInt(x) + 0.5), 10 *(parseInt(y) + 0.5)])
-    // }
-
-
-    // fileInput.addEventListener('change', function (e) {
-    //     var file = fileInput.files[0];
-    //     // var textType = /text.*/;
-    //     var reader = new FileReader();
-    //     reader.onload = function (e) {
-    //         var content = reader.result;
-    //         //Here the content has been read successfuly
-    //         // FileContent = content;
-    //         // console.log(content);
-    //
-    //         var lines = content.split('\n');
-    //         for (var line = 0; line < lines.length; line++) {
-    //             FileContent.push(lines[line].split("=")[0].split(")")[0].split("(")[1])
-    //         }
-    //         createScene();
-    //     };
-    //     reader.readAsText(file);
-    //
-    // });
-    //
-    //
-    // function createScene() {
-    //     FileContent.forEach((val) => {
-    //         if (typeof val !== 'undefined') {
-    //
-    //             let cube = new THREE.Mesh(geometry, material);
-    //
-    //             var geometry2 = new THREE.EdgesGeometry(cube.geometry);
-    //
-    //             var material2 = new THREE.LineBasicMaterial({color: 0x00a4ff, linewidth: 2});
-    //
-    //             var wireframe = new THREE.LineSegments(geometry2, material2);
-    //
-    //             // let temp = lines[line].split("=")[0].split(")")[0].split("(")[1];
-    //             // console.log(temp.split(""));
-    //             // console.log(lines[line].split("=")[0].split(")")[0].split("(")[1].split(",")[0]);
-    //             // console.log(lines[line].split("=")[0].split(")")[0].split("(")[1].split(",")[1]);
-    //             // scene.add( cube );
-    //             let position = wallPositionCalculator(val.split(",")[0], val.split(",")[1]);
-    //             console.log(position)
-    //             cube.position.x = position[0];
-    //             cube.position.y = 7.5;
-    //             cube.position.z = position[1];
-    //             wireframe.position.x = position[0];
-    //             wireframe.position.y = 7.5;
-    //             wireframe.position.z = position[1];
-    //
-    //             scene.add(cube);
-    //             scene.add(wireframe);
-    //
-    //
-    //             console.log();
-    //         }
-    //     })
-    // }
-
-
 })(jQuery);
 
 
 
+
+
+
+
+
+// dragControls = new DragControls( [cube], camera, renderer.domElement );
+// dragControls.enabled = false;
+// dragControls.addEventListener( 'dragstart', function () { controls.enabled = false; } );
+// dragControls.addEventListener ( 'drag', function( event ){
+//     event.object.position.y = 10;
+//     event.object.position.z = Math.floor(event.object.position.z/ 10)* 10 + 5;
+//     event.object.position.x = Math.floor(event.object.position.x/ 10)* 10 + 5;
+// })
+// dragControls.addEventListener( 'dragend', function () { controls.enabled = true; } );
+
+
+
+
+
+
+
+
+// function wallPositionCalculator(x, y) {
+//     return ([10 *(parseInt(x) + 0.5), 10 *(parseInt(y) + 0.5)])
+// }
+
+
+// fileInput.addEventListener('change', function (e) {
+//     var file = fileInput.files[0];
+//     // var textType = /text.*/;
+//     var reader = new FileReader();
+//     reader.onload = function (e) {
+//         var content = reader.result;
+//         //Here the content has been read successfuly
+//         // FileContent = content;
+//         // console.log(content);
+//
+//         var lines = content.split('\n');
+//         for (var line = 0; line < lines.length; line++) {
+//             FileContent.push(lines[line].split("=")[0].split(")")[0].split("(")[1])
+//         }
+//         createScene();
+//     };
+//     reader.readAsText(file);
+//
+// });
+//
+//
+// function createScene() {
+//     FileContent.forEach((val) => {
+//         if (typeof val !== 'undefined') {
+//
+//             let cube = new THREE.Mesh(geometry, material);
+//
+//             var geometry2 = new THREE.EdgesGeometry(cube.geometry);
+//
+//             var material2 = new THREE.LineBasicMaterial({color: 0x00a4ff, linewidth: 2});
+//
+//             var wireframe = new THREE.LineSegments(geometry2, material2);
+//
+//             // let temp = lines[line].split("=")[0].split(")")[0].split("(")[1];
+//             // console.log(temp.split(""));
+//             // console.log(lines[line].split("=")[0].split(")")[0].split("(")[1].split(",")[0]);
+//             // console.log(lines[line].split("=")[0].split(")")[0].split("(")[1].split(",")[1]);
+//             // scene.add( cube );
+//             let position = wallPositionCalculator(val.split(",")[0], val.split(",")[1]);
+//             console.log(position)
+//             cube.position.x = position[0];
+//             cube.position.y = 7.5;
+//             cube.position.z = position[1];
+//             wireframe.position.x = position[0];
+//             wireframe.position.y = 7.5;
+//             wireframe.position.z = position[1];
+//
+//             scene.add(cube);
+//             scene.add(wireframe);
+//
+//
+//             console.log();
+//         }
+//     })
+// }
