@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Amir Web viewer</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="assets/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="assets/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@2.2.0/dist/gridstack.min.css">
+
+    <style type="text/css">
+        .grid-stack {
+            background: #696969;
+        }
+
+        .grid-stack-item-content {
+            color: #2c3e50;
+            text-align: center;
+            background-color: #2d2d2d;
+        }
+    </style>
+
+</head>
+<body style="background-color: #696969 !important; width: 100% !important;">
+
+
+<div class="grid-stack">
+
+    <div class="grid-stack-item" data-gs-x="0" data-gs-y="0" data-gs-width="12" data-gs-height="1" data-gs-no-move="yes" data-gs-no-resize="yes">
+        <div class="grid-stack-item-content">item3</div>
+    </div>
+
+    <div id="canvasContainer" class="grid-stack-item" data-gs-no-move="yes" data-gs-x="0" data-gs-y="2" data-gs-width="8" data-gs-height="8">
+        <div class="grid-stack-item-content">
+            <div class="options" style="margin-top: 10%">
+                <div class="option --is-active" data-option="legs" id="selectObj">
+                    <img src="assets/img/icons/select.svg" style="transform: rotate(-45deg);" alt=""/>
+                </div>
+                <div class="option" data-option="legs" id="panWord">
+                    <img src="assets/img/icons/pan.png" alt=""/>
+                </div>
+                <div class="option" data-option="cushions" id="moveObj">
+                    <img src="assets/img/icons/move.png" alt=""/>
+                </div>
+                <div class="option" data-option="cushions" id="rotateObj">
+                    <img src="assets/img/icons/rotate.png" alt=""/>
+                </div>
+                <div class="option" data-option="base" id="scaleObj">
+                    <img src="assets/img/icons/scale.png" alt=""/>
+                </div>
+            </div>
+
+
+            <div class="options" style="margin-top: 10%; right: 0 !important; left: auto;">
+                <div class="option" data-option="legs" id="addWall">
+                    <img src="assets/img/icons/wall.png" alt=""/>
+                </div>
+                <div class="option" data-option="cushions" id="drawPoint">
+                    <img src="assets/img/icons/door.png" alt=""/>
+                </div>
+                <div class="option" data-option="base">
+                    <img src="assets/img/icons/windows.png" alt=""/>
+                </div>
+                <div class="option" data-option="supports">
+                    <img src="assets/img/icons/vent.png" alt=""/>
+                </div>
+            </div>
+
+            <div class="options" style="margin-top: 40%; right: 0 !important; left: auto;">
+                <div class="option" data-option="legs">
+                    <img src="assets/img/icons/trash.png" alt=""/>
+                </div>
+            </div>
+
+
+            <div id="Place3D"></div>
+        </div>
+    </div>
+
+    <div id="d3Container" class="grid-stack-item" data-gs-x="9" data-gs-y="2" data-gs-width="4" data-gs-height="8">
+        <div class="grid-stack-item-content" style="background-color:#cccccc">
+            <!--<div id="cellView" style="background-color: #ccc !important;"></div>-->
+
+
+
+
+
+
+
+            <div id="cellView"></div>
+
+
+
+
+
+
+            <!--<svg >-->
+                <!--<g id="grid"></g>-->
+                <!--<g id="canvas">-->
+                    <!--&lt;!&ndash; This will be your canvas &ndash;&gt;-->
+                    <!--<circle r="5"></circle>-->
+                <!--</g>-->
+            <!--</svg>-->
+
+
+
+
+
+
+
+
+
+        </div>
+        <!--<div id="cellView"></div>-->
+        <!--#ccc-->
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="assets/js/materialize.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridstack@2.2.0/dist/gridstack.all.js"></script>
+<script src="https://d3js.org/d3.v6.js"></script>
+<script type="module" src="assets/js/init.js"></script>
+
+
+
+
+</body>
+</html>
