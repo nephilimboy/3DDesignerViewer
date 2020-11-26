@@ -49,91 +49,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     let selectObjDIV, panWordDIV, moveObjDIV, rotateObjDIV, scaleObjDIV;
 
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // let grid2 = (g, x, y, k) => g
-    //     .attr('stroke', 'currentColor')
-    //     .attr('stroke-opacity', 0.1)
-    //     .call(g => g
-    //         .selectAll('.x')
-    //         .data(x.ticks(12 / k))
-    //         .join(
-    //             enter => enter.append('line').attr('class', 'x').attr('y2', height),
-    //             update => update,
-    //             exit => exit.remove()
-    //         )
-    //         .attr('x1', d => 0.5 + x(d))
-    //         .attr('x2', d => 0.5 + x(d))
-    //     )
-    //     .call(g => g
-    //         .selectAll('.y')
-    //         .data(y.ticks(12 / k))
-    //         .join(
-    //             enter => enter.append('line').attr('class', 'y').attr('x2', width),
-    //             update => update,
-    //             exit => exit.remove()
-    //         )
-    //         .attr('y1', d => 0.5 + y(d))
-    //         .attr('y2', d => 0.5 + y(d)));
-    //
-    // let width = $(d3Container).width();
-    // let height = $(d3Container).height();
-    // let x = d3.scaleLinear()
-    //     .domain([-4.5, 4.5])
-    //     .range([0, width])
-    // let y = d3.scaleLinear()
-    //     .domain([-4.5, 4.5])
-    //     .range([height, 0])
-    //
-    // const zoom = d3.zoom()
-    //         .scaleExtent([0.25, 4])
-    //         .on('zoom',zoomed);
-    //
-    // const svg = d3.select('svg')
-    //     .attr('viewBox', [0, 0, width, height]);
-    //
-    // const canvas = svg.select('g#canvas');
-    // const gridContainer = svg.select('g#grid');
-    //
-    // svg.call(zoom).call(zoom.transform, d3.zoomIdentity);
-    //
-    // function zoomed({transform}) {
-    //     // console.log(transform)
-    //     const zx = transform.rescaleX(x).interpolate(d3.interpolateRound);
-    //     const zy = transform.rescaleY(y).interpolate(d3.interpolateRound);
-    //
-    //     gridContainer.call(grid2, zx, zy, transform.k );
-    //
-    //     canvas.attr('transform', transform);
-    // }
-    //
-    // return Object.assign(svg.node(), {
-    //     reset() {
-    //         const identity = d3.zoomIdentity;
-    //
-    //         identity.x = 200;
-    //         identity.y = 200
-    //
-    //         svg.transition()
-    //             .duration(750)
-    //             .call(zoom.transform, identity);
-    //     }
-    // });
-
-
-
-
-
-
-
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     let width = $(d3Container).width();
     let height = $(d3Container).height();
@@ -141,13 +57,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     var gridData = gridData();
     var grid = d3.select("#cellView")
         .append("svg")
-        // .attr("width","510px")
-        // .attr("height","510px");
         .attr("width",  $(d3Container).width())
         .attr("height",  $(d3Container).height())
 
-
-    // const g = grid.append("g");
     grid.call(d3.zoom()
         .extent([[0, 0], [width, height]])
         .scaleExtent([1, 3])
@@ -184,18 +96,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         .style("fill", "#e6e6e6")
         .style("stroke", "#222");
 
-
-
-
-    // console.log( column);
-    console.log( row.selectAll(".sqrTable"));
-
     document.getElementById('1_1').style.fill = "#000000";
-
-    // var column2222 = row.selectAll(".sqrTable").select("#1_1")
-    //     .style("fill", "#e65d1f");
-
-
 
 
     function zoomed({transform}) {
@@ -216,27 +117,17 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         renderer.setPixelRatio(window.devicePixelRatio);
         raycaster = new THREE.Raycaster();
         mouse = new THREE.Vector2()
-        // renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setSize($(canvasContainer).width(), $(canvasContainer).height());
         var element = document.getElementById("Place3D");
         element.appendChild(renderer.domElement);
 
         camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000);
-        // camera.lookAt(200, 200, 0);
-
-
-        // camera.position.set(600, 300, 0);
         camera.position.set(600, 300, 0);
-
-
-        // controls
 
         controls = new OrbitControls(camera, renderer.domElement);
         controls.target.set( 200, 0, 200 );
 
-        // orbitControl = new THREE.OrbitControls(camera, renderer.domElement);
-        // orbitControl.update();
-        // orbitControl.addEventListener('change', render);
+
 
         transferControl = new TransformControls(camera, renderer.domElement);
         // transferControl.setMode( "rotate" );
@@ -268,9 +159,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
         });
 
-        //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
-
-        controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        controls.enableDamping = true;
         controls.dampingFactor = 0.05;
 
         controls.screenSpacePanning = false;
@@ -318,36 +207,22 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
         scene.add(transferControl);
 
-
-        // const geometry = new THREE.PlaneGeometry( 200, 100, 100 );
-        // const material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-        // const plane = new THREE.Mesh( geometry, material );
-        // plane.rotation.x = Math.PI/2;
-        // scene.add( plane );
-
-
         const gridHelper = new THREE.GridHelper(400, 40, 0x0000ff, 0x808080);
         gridHelper.position.x = 200;
         gridHelper.position.z = 200;
         scene.add(gridHelper);
 
         // lights
-
         const dirLight1 = new THREE.DirectionalLight(0xffffff);
         dirLight1.position.set(1, 1, 1);
         scene.add(dirLight1);
-
         const dirLight2 = new THREE.DirectionalLight(0x002288);
         dirLight2.position.set(-1, -1, -1);
         scene.add(dirLight2);
-
         const ambientLight = new THREE.AmbientLight(0x222222);
         scene.add(ambientLight);
 
-        //
-
-        window.addEventListener('resize', onWindowResize, false);
-
+        window.addEventListener('resize', onResizeContainer, false);
         renderer.domElement.addEventListener('click', clickOnCanvas, false);
 
 
@@ -376,34 +251,12 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('drawPoint').addEventListener("click", xxxx, false);
 
 
-        var pointsOfIntersection = new THREE.Geometry();
-
-        var a = new THREE.Vector3(),
-            b = new THREE.Vector3(),
-            c = new THREE.Vector3();
-        var planePointA = new THREE.Vector3(),
-            planePointB = new THREE.Vector3(),
-            planePointC = new THREE.Vector3();
-        var lineAB = new THREE.Line3(),
-            lineBC = new THREE.Line3(),
-            lineCA = new THREE.Line3();
-
-        var pointOfIntersection = new THREE.Vector3();
-
-        const geometry = new THREE.PlaneGeometry(200, 100, 100);
-        const material = new THREE.MeshBasicMaterial({
-            color: "lightgreen",
-            transparent: true, opacity: 0.75, side: THREE.DoubleSide
-        });
-        const plane = new THREE.Mesh(geometry, material);
-        plane.rotation.x = Math.PI / 2;
-        // scene.add( plane );
-
-
         const geometry2 = new THREE.BoxBufferGeometry(10, 30, 10);
         geometry2.verticesNeedUpdate = true;
         const material2 = new THREE.MeshBasicMaterial({color: 0x032538});
         let cube2 = new THREE.Mesh(geometry2, material2);
+        // cube2.position.x = 200;
+        // cube2.position.z = 200;
         cube2.position.y = 15;
         scene.add(cube2);
         selectableObject.push(cube2);
@@ -413,21 +266,15 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             const geometry = cube2.geometry;
             const positionAttribute = geometry.getAttribute('position');
             const vertex = new THREE.Vector3();
-            // console.log(positionAttribute)
             let vertx = [];
-
             for (let i = 0; i < 8; i++) {
                 vertex.fromBufferAttribute(positionAttribute, i);
-
                 cube2.localToWorld(vertex);
                 if (vertex.y == 0) {
                     vertx.push({
                         x:  vertex.x /10,
                         y: vertex.z /10
                     });
-                    // console.log("----------")
-                    // console.log(i)
-                    // console.log(vertex)
                 }
             }
             vertx.forEach(vert =>{
@@ -538,55 +385,13 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             })
         }
 
-
-        function drawPoint() {
-            var mathPlane = new THREE.Plane();
-            plane.localToWorld(planePointA.copy(plane.geometry.vertices[plane.geometry.faces[0].a]));
-            plane.localToWorld(planePointB.copy(plane.geometry.vertices[plane.geometry.faces[0].b]));
-            plane.localToWorld(planePointC.copy(plane.geometry.vertices[plane.geometry.faces[0].c]));
-            mathPlane.setFromCoplanarPoints(planePointA, planePointB, planePointC);
-
-            cube2.geometry.faces.forEach(function (face) {
-                cube2.localToWorld(a.copy(cube2.geometry.vertices[face.a]));
-                cube2.localToWorld(b.copy(cube2.geometry.vertices[face.b]));
-                cube2.localToWorld(c.copy(cube2.geometry.vertices[face.c]));
-                lineAB = new THREE.Line3(a, b);
-                lineBC = new THREE.Line3(b, c);
-                lineCA = new THREE.Line3(c, a);
-                setPointOfIntersection(lineAB, mathPlane);
-                setPointOfIntersection(lineBC, mathPlane);
-                setPointOfIntersection(lineCA, mathPlane);
-            });
-
-            var pointsMaterial = new THREE.PointsMaterial({
-                size: 1,
-                color: 0xffff00
-            });
-            var points = new THREE.Points(pointsOfIntersection, pointsMaterial);
-            scene.add(points);
-
-            var lines = new THREE.LineSegments(pointsOfIntersection, new THREE.LineBasicMaterial({
-                color: 0xffffff
-            }));
-            scene.add(lines);
-        }
-
-        function setPointOfIntersection(line, plane) {
-            pointOfIntersection = plane.intersectLine(line);
-            if (pointOfIntersection) {
-                pointsOfIntersection.vertices.push(pointOfIntersection.clone());
-            }
-            ;
-        }
-
-
     }
 
-    function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    }
+    // function onWindowResize() {
+    //     camera.aspect = window.innerWidth / window.innerHeight;
+    //     camera.updateProjectionMatrix();
+    //     renderer.setSize(window.innerWidth, window.innerHeight);
+    // }
 
     function onResizeContainer() {
         // camera.aspect = window.innerWidth / window.innerHeight;
@@ -597,11 +402,13 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     function clickOnCanvas() {
         event.preventDefault();
         // renderer.setSize($(canvasContainer).width(), $(canvasContainer).height());
-        mouse.x = (event.clientX / $(canvasContainer).width()) * 2 - 1;
-        mouse.y = -(event.clientY /$(canvasContainer).height()) * 2 + 1;
+        mouse.x = (event.offsetX / $(canvasContainer).width()) * 2 - 1;
+        mouse.y = -(event.offsetY /$(canvasContainer).height()) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
+        console.log("dkdkkd")
         var intersects = raycaster.intersectObjects(selectableObject, true);
         if (intersects.length > 0) {
+            console.log("1111")
             if (currentSelectedObj != intersects[0].object) {
 
                 if (selectMode == 0) {
@@ -657,7 +464,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         transferControl.detach();
     }
 
-
     function moveObj() {
         selectObjDIV.classList.remove("--is-active");
         panWordDIV.classList.remove("--is-active");
@@ -709,7 +515,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     function addWall() {
         let cube = new THREE.Mesh(geometry, material);
-        cube.position.y = 14;
+        cube.position.y = 15;
+        cube.position.z = 200;
+        cube.position.x = 200;
         scene.add(cube);
         selectableObject.push(cube);
     }
@@ -754,16 +562,14 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     function gridData() {
         var data = new Array();
-        var xpos = 1; //starting xpos and ypos at 1 so the stroke will show when we make the grid below
+        var xpos = 1;
         var ypos = 1;
         var width = 10;
         var height = 10;
         var click = 0;
-
         // iterate for rows
         for (var row = 0; row < 40; row++) {
             data.push( new Array() );
-
             // iterate for cells/columns inside rows
             for (var column = 0; column < 40; column++) {
                 data[row].push({
