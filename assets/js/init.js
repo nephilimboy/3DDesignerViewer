@@ -74,7 +74,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
         transferControl = new TransformControls(camera, renderer.domElement);
         // transferControl.setMode( "rotate" );
-        transferControl.setRotationSnap(Math.PI / 12);
+        // transferControl.setRotationSnap(Math.PI / 12);
         // transferControl.showY = false;
         transferControl.setMode("scale");
         transferControl.setScaleSnap(1);
@@ -85,13 +85,13 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             controls.enabled = !event.value;
             if (transferControl.mode == "rotate") {
 
-                event.target.object.rotation.z = 0;
-                event.target.object.rotation.x = 0
+                // event.target.object.rotation.z = 0;
+                // event.target.object.rotation.x = 0
             }
             else if (transferControl.mode == "translate") {
 
                 event.target.object.position.y = 15;
-                event.target.object.position.z = Math.floor(event.target.object.position.z / 10) * 10;
+                event.target.object.position.z = Math.floor(event.target.object.position.z / 10) * 10 + 5;
                 event.target.object.position.x = Math.floor(event.target.object.position.x / 10) * 10 + 5;
             }
             else if (transferControl.mode == "scale") {
@@ -182,7 +182,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         rotateObjDIV.addEventListener("click", rotateObj, false);
         scaleObjDIV.addEventListener("click", scaleObj, false);
         document.getElementById('addWall').addEventListener("click", addWall, false);
-        document.getElementById('drawPoint').addEventListener("click", xxxx, false);
+        // document.getElementById('drawPoint').addEventListener("click", xxxx, false);
         document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
 
 
@@ -196,14 +196,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         // scene.add(cube2);
         // selectableObject.push(cube2);
 
-
-        function xxxx() {
-        }
-
-
-        function plot(x0, y0, x1, y1) {
-
-        }
 
         function bresenhamAlgorithm(x1,y1, x2,y2) {
             //Bresenham algorithm From Medium.com
@@ -332,44 +324,59 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                     }
                 }
 
+                // // Sort based on X
+                // // console.log(vertx);
+                // let maxXpoint = null;
+                // let maxYpoint =null;
+                //
+                // function sortByPosition(a, b){
+                //     if (a.x == b.x) return a.y - b.y;
+                //     return a.x - b.x;
+                // }
+                // function sortByPosition(a, b){
+                //     if (a.y == b.y) return a.x - b.x;
+                //     return a.y - b.y;
+                // }
+
+
+
+
                 let dots = [];
-                vertx.forEach(vert =>{
-                    vertx.forEach(vertLoop =>{
-                        let x0 = vert.x;
-                        let y0 = vert.y;
-                        let x1 = vertLoop.x;
-                        let y1 = vertLoop.y;
-                        var dx = Math.abs(x1 - x0),
-                            dy = Math.abs(y1 - y0),
-                            sx = (x0 < x1) ? 1 : -1,
-                            sy = (y0 < y1) ? 1 : -1,
-                            err = dx - dy;
-                        while(true) {
-                            dots.push({x:x0 , y: y0})
-                            if ((x0 == x1) && (y0 == y1) || (dy<=1 && dx<=1)) break;
-                            var e2 = 2 * err;
-                            if (e2 >- dy) { err -= dy; x0 += sx; }
-                            if (e2 < dx) { err += dx; y0 += sy; }
-                        }
-                    });
-                })
+
+                // console.log(maxX + " | " + minY);
+                // console.log(minX + " | " + maxY);
+
+                let x0 = vertx[0].x;
+                let y0 = vertx[0].y;
+                let x1 = vertx[2].x;
+                let y1 = vertx[2].y;
+                var dx = Math.abs(x1 - x0),
+                    dy = Math.abs(y1 - y0),
+                    sx = (x0 < x1) ? 1 : -1,
+                    sy = (y0 < y1) ? 1 : -1,
+                    err = dx - dy;
+                while (true) {
+                    dots.push({x: x0, y: y0})
+                    if ((x0 == x1) && (y0 == y1) || (dy <= 1 && dx <= 1)) break;
+                    var e2 = 2 * err;
+                    if (e2 > -dy) {
+                        err -= dy;
+                        x0 += sx;
+                    }
+                    if (e2 < dx) {
+                        err += dx;
+                        y0 += sy;
+                    }
+                }
+
 
                 dots.forEach(obj=>{
-                    // console.log(obj);
-                    // let geometry2 = new THREE.BoxBufferGeometry(10, 50, 10);
-                    // let material2 = new THREE.MeshBasicMaterial({color: 0x633568});
-                    // let cube2 = new THREE.Mesh(geometry2, material2);
                     let x = Math.floor(obj.x) ;
                     let z = Math.floor(obj.y);
-                    // console.log(x + ' | ' + z);
                     document.getElementById('#'+x + '_' + z).style.fill = "#000000";
-
-
-                    // // cube2.position.x = Math.floor(10 * );
-                    // cube2.position.y = 25;
-                    // // cube2.position.z =  Math.floor(10* obj.y);
-                    // scene.add(cube2);
                 })
+
+
             })
         }
 
@@ -530,6 +537,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     }
 
     function moveObj() {
+        transferControl.showX = true;
+        transferControl.showZ = true;
+        transferControl.showY = true;
         selectObjDIV.classList.remove("--is-active");
         panWordDIV.classList.remove("--is-active");
         moveObjDIV.classList.add("--is-active");
@@ -545,12 +555,18 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     }
 
     function rotateObj() {
+        transferControl.showX = true;
+        transferControl.showZ = true;
+        transferControl.showY = true;
+
+        transferControl.showX = false;
+        transferControl.showZ = false;
+
         selectObjDIV.classList.remove("--is-active");
         panWordDIV.classList.remove("--is-active");
         moveObjDIV.classList.remove("--is-active");
         rotateObjDIV.classList.add("--is-active");
         scaleObjDIV.classList.remove("--is-active");
-
         selectMode = 2;
         transferControl.setMode("rotate");
         if (currentSelectedObj != null) {
@@ -560,6 +576,12 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     }
 
     function scaleObj() {
+        transferControl.showX = true;
+        transferControl.showZ = true;
+        transferControl.showY = true;
+
+        transferControl.showZ = false;
+        transferControl.showY = false;
 
         selectObjDIV.classList.remove("--is-active");
         panWordDIV.classList.remove("--is-active");
@@ -575,14 +597,14 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         }
     }
 
-    const geometry = new THREE.BoxBufferGeometry(15, 30, 15);
+    const geometry = new THREE.BoxBufferGeometry(10, 30, 5);
     const material = new THREE.MeshBasicMaterial({color: 0x032538});
 
     function addWall() {
         let cube = new THREE.Mesh(geometry, material);
         cube.position.y = 15;
-        cube.position.z = 300;
-        cube.position.x = 300;
+        cube.position.z = 305;
+        cube.position.x = 305;
         scene.add(cube);
         selectableObject.push(cube);
     }
