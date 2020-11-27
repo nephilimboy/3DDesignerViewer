@@ -50,7 +50,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     let selectObjDIV, panWordDIV, moveObjDIV, rotateObjDIV, scaleObjDIV;
 
 
-    let dots = [];
 
     function init() {
 
@@ -65,11 +64,11 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         var element = document.getElementById("Place3D");
         element.appendChild(renderer.domElement);
 
-        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000);
+        camera = new THREE.PerspectiveCamera(70, $(canvasContainer).width() / $(canvasContainer).height(), 1, 30000);
         camera.position.set(600, 300, 0);
 
         controls = new OrbitControls(camera, renderer.domElement);
-        controls.target.set( 200, 0, 200 );
+        controls.target.set( 300, 0, 300 );
 
 
 
@@ -151,9 +150,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
         scene.add(transferControl);
 
-        const gridHelper = new THREE.GridHelper(400, 40, 0x0000ff, 0x808080);
-        gridHelper.position.x = 200;
-        gridHelper.position.z = 200;
+        const gridHelper = new THREE.GridHelper(600, 60, 0x0000ff, 0x808080);
+        gridHelper.position.x = 300;
+        gridHelper.position.z = 300;
         scene.add(gridHelper);
 
         // lights
@@ -184,77 +183,26 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         scaleObjDIV.addEventListener("click", scaleObj, false);
         document.getElementById('addWall').addEventListener("click", addWall, false);
         document.getElementById('drawPoint').addEventListener("click", xxxx, false);
+        document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
 
 
-        const geometry2 = new THREE.BoxBufferGeometry(15, 30, 15);
-        geometry2.verticesNeedUpdate = true;
-        const material2 = new THREE.MeshBasicMaterial({color: 0x032538});
-        let cube2 = new THREE.Mesh(geometry2, material2);
-        // cube2.position.x = 200;
-        // cube2.position.z = 200;
-        cube2.position.y = 15;
-        scene.add(cube2);
-        selectableObject.push(cube2);
+        // const geometry2 = new THREE.BoxBufferGeometry(15, 30, 15);
+        // geometry2.verticesNeedUpdate = true;
+        // const material2 = new THREE.MeshBasicMaterial({color: 0x032538});
+        // let cube2 = new THREE.Mesh(geometry2, material2);
+        // // cube2.position.x = 200;
+        // // cube2.position.z = 200;
+        // cube2.position.y = 15;
+        // scene.add(cube2);
+        // selectableObject.push(cube2);
 
 
         function xxxx() {
-            const geometry = cube2.geometry;
-            const positionAttribute = geometry.getAttribute('position');
-            const vertex = new THREE.Vector3();
-            let vertx = [];
-            for (let i = 0; i < 8; i++) {
-                vertex.fromBufferAttribute(positionAttribute, i);
-                cube2.localToWorld(vertex);
-                if (vertex.y == 0) {
-                    // console.log(vertex.x + " | " + vertex.z )
-                    vertx.push({
-                        x:  Math.floor(vertex.x/10) ,
-                        y: Math.floor(vertex.z/10)
-                    });
-                }
-            }
-
-            dots = [];
-            vertx.forEach(vert =>{
-                vertx.forEach(vertLoop =>{
-                    plot(vert.x, vert.y, vertLoop.x, vertLoop.y)
-                });
-            })
-            dots = [];
-            // console.log(plot(0,0, 0.5,0.5))
         }
 
 
         function plot(x0, y0, x1, y1) {
 
-            var dx = Math.abs(x1 - x0),
-                dy = Math.abs(y1 - y0),
-                sx = (x0 < x1) ? 1 : -1,
-                sy = (y0 < y1) ? 1 : -1,
-                err = dx - dy;
-            while(true) {
-                dots.push({x:x0 , y: y0})
-                if ((x0 == x1) && (y0 == y1) || (dy<=1 && dx<=1)) break;
-                var e2 = 2 * err;
-                if (e2 >- dy) { err -= dy; x0 += sx; }
-                if (e2 < dx) { err += dx; y0 += sy; }
-            }
-            // console.log(dots)
-
-            dots.forEach(obj=>{
-                // console.log(obj);
-                let geometry2 = new THREE.BoxBufferGeometry(10, 50, 10);
-                let material2 = new THREE.MeshBasicMaterial({color: 0x633568});
-                let cube2 = new THREE.Mesh(geometry2, material2);
-
-                cube2.position.x = Math.floor(obj.x * 10) + 5 ;
-                cube2.position.z = Math.floor(obj.y * 10) + 5;
-
-                // cube2.position.x = Math.floor(10 * );
-                cube2.position.y = 25;
-                // cube2.position.z =  Math.floor(10* obj.y);
-                scene.add(cube2);
-            })
         }
 
         function bresenhamAlgorithm(x1,y1, x2,y2) {
@@ -359,8 +307,75 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             })
         }
 
+        function updateCellView(){
+
+            let cells = document.querySelectorAll('[id^="#"]');
+            // console.log(cells);
+            cells.forEach(obj=>{
+                obj.style.fill = "#ffffff";
+            })
+
+            selectableObject.forEach(selectableobj=>{
+                let geometry = selectableobj.geometry;
+                let positionAttribute = geometry.getAttribute('position');
+                let vertex = new THREE.Vector3();
+                let vertx = [];
+                for (let i = 0; i < 8; i++) {
+                    vertex.fromBufferAttribute(positionAttribute, i);
+                    selectableobj.localToWorld(vertex);
+                    if (vertex.y == 0) {
+                        // console.log(vertex.x + " | " + vertex.z )
+                        vertx.push({
+                            x:  Math.floor(vertex.x/10) ,
+                            y: Math.floor(vertex.z/10)
+                        });
+                    }
+                }
+
+                let dots = [];
+                vertx.forEach(vert =>{
+                    vertx.forEach(vertLoop =>{
+                        let x0 = vert.x;
+                        let y0 = vert.y;
+                        let x1 = vertLoop.x;
+                        let y1 = vertLoop.y;
+                        var dx = Math.abs(x1 - x0),
+                            dy = Math.abs(y1 - y0),
+                            sx = (x0 < x1) ? 1 : -1,
+                            sy = (y0 < y1) ? 1 : -1,
+                            err = dx - dy;
+                        while(true) {
+                            dots.push({x:x0 , y: y0})
+                            if ((x0 == x1) && (y0 == y1) || (dy<=1 && dx<=1)) break;
+                            var e2 = 2 * err;
+                            if (e2 >- dy) { err -= dy; x0 += sx; }
+                            if (e2 < dx) { err += dx; y0 += sy; }
+                        }
+                    });
+                })
+
+                dots.forEach(obj=>{
+                    // console.log(obj);
+                    // let geometry2 = new THREE.BoxBufferGeometry(10, 50, 10);
+                    // let material2 = new THREE.MeshBasicMaterial({color: 0x633568});
+                    // let cube2 = new THREE.Mesh(geometry2, material2);
+                    let x = Math.floor(obj.x) ;
+                    let z = Math.floor(obj.y);
+                    // console.log(x + ' | ' + z);
+                    document.getElementById('#'+x + '_' + z).style.fill = "#000000";
+
+
+                    // // cube2.position.x = Math.floor(10 * );
+                    // cube2.position.y = 25;
+                    // // cube2.position.z =  Math.floor(10* obj.y);
+                    // scene.add(cube2);
+                })
+            })
+        }
+
     }
 
+    // ToDo change grid size based on the user's input
     function creatCellViewer(){
         let width = $(d3Container).width();
         let height = $(d3Container).height();
@@ -368,12 +383,14 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         var gridData = gridData();
         var grid = d3.select("#cellView")
             .append("svg")
+            // ToDo change the width/height dynamically based on the on UI grid change event
             .attr("width",  $(d3Container).width())
             .attr("height",  $(d3Container).height())
 
         grid.call(d3.zoom()
             .extent([[0, 0], [width, height]])
-            .scaleExtent([1, 3])
+            // ToDo Fix the Zoom
+            .scaleExtent([0, 3])
             .on("zoom", zoomed));
 
         const g = grid.append("g");
@@ -396,7 +413,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 if(d.y > 10){
                     y = Math.floor(d.y / 10);
                 }
-                return x + "_" + y;
+                // console.log(x + "_" + y)
+                return '#'+ x + "_" + y;
             })
             .attr("x", function(d) { return d.x; })
             .attr("y", function(d) { return d.y; })
@@ -405,7 +423,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             .style("fill", "#e6e6e6")
             .style("stroke", "#222");
 
-        document.getElementById('1_1').style.fill = "#000000";
+
 
 
         function zoomed({transform}) {
@@ -419,10 +437,10 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             var height = 10;
             var click = 0;
             // iterate for rows
-            for (var row = 0; row < 40; row++) {
+            for (var row = 0; row < 60; row++) {
                 data.push( new Array() );
                 // iterate for cells/columns inside rows
-                for (var column = 0; column < 40; column++) {
+                for (var column = 0; column < 60; column++) {
                     data[row].push({
                         x: xpos,
                         y: ypos,
@@ -557,14 +575,14 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         }
     }
 
-    const geometry = new THREE.BoxGeometry(10, 30, 10);
+    const geometry = new THREE.BoxBufferGeometry(15, 30, 15);
     const material = new THREE.MeshBasicMaterial({color: 0x032538});
 
     function addWall() {
         let cube = new THREE.Mesh(geometry, material);
         cube.position.y = 15;
-        cube.position.z = 200;
-        cube.position.x = 200;
+        cube.position.z = 300;
+        cube.position.x = 300;
         scene.add(cube);
         selectableObject.push(cube);
     }
