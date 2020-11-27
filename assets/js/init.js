@@ -77,7 +77,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
         transferControl = new TransformControls(camera, renderer.domElement);
         // transferControl.setMode( "rotate" );
-        // transferControl.setRotationSnap(Math.PI / 12);
+        transferControl.setRotationSnap(Math.PI / 12);
         // transferControl.showY = false;
         transferControl.setMode("scale");
         transferControl.setScaleSnap(1);
