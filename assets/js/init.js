@@ -1,10 +1,13 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.122/build/three.module.js";
 import {OrbitControls} from "https://cdn.jsdelivr.net/npm/three@0.114/examples/jsm/controls/OrbitControls.js";
 import {TransformControls} from "https://cdn.jsdelivr.net/npm/three@0.122/examples/jsm/controls/TransformControls.js";
+// import {ThreeBsp} from "";
 // import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.122/examples/jsm/controls/OrbitControls.js";
 import {DragControls} from "https://cdn.jsdelivr.net/npm/three@0.114/examples/jsm/controls/DragControls.js";
 import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
 // import { TransformControls } from 'http://threejs.org/examples/jsm/controls/TransformControls.js';
+
+
 
 
 (function ($) {
@@ -182,7 +185,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         rotateObjDIV.addEventListener("click", rotateObj, false);
         scaleObjDIV.addEventListener("click", scaleObj, false);
         document.getElementById('addWall').addEventListener("click", addWall, false);
-        // document.getElementById('drawPoint').addEventListener("click", xxxx, false);
+        document.getElementById('addDoor').addEventListener("click", addDoor, false);
+        document.getElementById('addWindow').addEventListener("click", addWindow, false);
+        document.getElementById('addVent').addEventListener("click", addVent, false);
         document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
 
 
@@ -599,9 +604,38 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     const geometry = new THREE.BoxBufferGeometry(10, 30, 5);
     const material = new THREE.MeshBasicMaterial({color: 0x032538});
+    const materialDoor = new THREE.MeshBasicMaterial({color: 0x55eedd});
+    const materialWindow = new THREE.MeshBasicMaterial({color: 0xfffdea});
+    const materialVent = new THREE.MeshBasicMaterial({color: 0xe6e6fa});
 
     function addWall() {
         let cube = new THREE.Mesh(geometry, material);
+        cube.position.y = 15;
+        cube.position.z = 305;
+        cube.position.x = 305;
+        scene.add(cube);
+        selectableObject.push(cube);
+    }
+
+    function addDoor() {
+        let cube = new THREE.Mesh(geometry, materialDoor);
+        cube.position.y = 15;
+        cube.position.z = 305;
+        cube.position.x = 305;
+        scene.add(cube);
+        selectableObject.push(cube);
+    }
+    function addWindow() {
+        let cube = new THREE.Mesh(geometry, materialWindow);
+        cube.position.y = 15;
+        cube.position.z = 305;
+        cube.position.x = 305;
+        scene.add(cube);
+        selectableObject.push(cube);
+    }
+
+    function addVent() {
+        let cube = new THREE.Mesh(geometry, materialVent);
         cube.position.y = 15;
         cube.position.z = 305;
         cube.position.x = 305;
