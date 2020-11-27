@@ -93,7 +93,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             }
             else if (transferControl.mode == "translate") {
 
-                event.target.object.position.y = 15;
+                // event.target.object.position.y = 15;
                 event.target.object.position.z = Math.floor(event.target.object.position.z / 10) * 10 + 5;
                 event.target.object.position.x = Math.floor(event.target.object.position.x / 10) * 10 + 5;
             }
@@ -115,40 +115,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
         controls.maxPolarAngle = Math.PI / 2;
 
-        const loader = new OBJLoader();
-        // loader.load('http://localhost:63342/WebModelViewer3D/assets/obj/human.obj',
-        //     function ( object ) {
-        //         object.traverse( function ( child ) {
-        //             if ( child.material ) {
-        //                 child.material = new THREE.MeshBasicMaterial({color: "#0ddeb4"})
-        //             }
-        //         } );
-        //
-        //         object.name = "blabla";
-        //
-        //
-        //         object.scale.set(5,5,5);
-        //         // object.position.x = 75;
-        //         // object.position.z = 75;
-        //         object.position.x = 0;
-        //         object.position.z = 0;
-        //
-        //         // scene.add( object );
-        //
-        //
-        //
-        //         // console.log(scene.getObjectByName("blabla"));
-        //         // scene.remove(scene.getObjectByName("blabla"));
-        //     },
-        //     // called when loading is in progresses
-        //     function ( xhr ) {
-        //         console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-        //     },
-        //     // called when loading has errors
-        //     function ( error ) {
-        //         console.log( 'An error happened' );
-        //     }
-        // );
 
 
         scene.add(transferControl);
@@ -188,6 +154,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('addDoor').addEventListener("click", addDoor, false);
         document.getElementById('addWindow').addEventListener("click", addWindow, false);
         document.getElementById('addVent').addEventListener("click", addVent, false);
+        document.getElementById('addHuman').addEventListener("click", addHuman, false);
         document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
 
 
@@ -604,9 +571,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     const geometry = new THREE.BoxBufferGeometry(10, 30, 5);
     const material = new THREE.MeshBasicMaterial({color: 0x032538});
-    const materialDoor = new THREE.MeshBasicMaterial({color: 0x55eedd});
-    const materialWindow = new THREE.MeshBasicMaterial({color: 0xfffdea});
-    const materialVent = new THREE.MeshBasicMaterial({color: 0xe6e6fa});
 
     function addWall() {
         let cube = new THREE.Mesh(geometry, material);
@@ -618,16 +582,24 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     }
 
     function addDoor() {
-        let cube = new THREE.Mesh(geometry, materialDoor);
-        cube.position.y = 15;
-        cube.position.z = 305;
-        cube.position.x = 305;
-        scene.add(cube);
-        selectableObject.push(cube);
+        let texture = new THREE.TextureLoader().load( 'http://localhost:63342/WebModelViewer3D/assets/textures/door.jpg' );
+        let doorGeometry = new THREE.BoxBufferGeometry(9, 20, 6);
+        let doormaterial = new THREE.MeshBasicMaterial( { map: texture } );
+        let door = new THREE.Mesh(doorGeometry, doormaterial);
+        door.position.y = 10;
+        door.position.z = 305;
+        door.position.x = 305;
+        scene.add(door);
+        selectableObject.push(door)
+
     }
+
     function addWindow() {
-        let cube = new THREE.Mesh(geometry, materialWindow);
-        cube.position.y = 15;
+        let windowGeometry = new THREE.BoxBufferGeometry(9, 10, 6);
+        let texture = new THREE.TextureLoader().load( 'http://localhost:63342/WebModelViewer3D/assets/textures/window.png' );
+        let materialWindow = new THREE.MeshBasicMaterial( { map: texture } );
+        let cube = new THREE.Mesh(windowGeometry, materialWindow);
+        cube.position.y = 20;
         cube.position.z = 305;
         cube.position.x = 305;
         scene.add(cube);
@@ -635,12 +607,57 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     }
 
     function addVent() {
-        let cube = new THREE.Mesh(geometry, materialVent);
-        cube.position.y = 15;
-        cube.position.z = 305;
-        cube.position.x = 305;
-        scene.add(cube);
-        selectableObject.push(cube);
+
+        const radius =  4;
+        const height =  15;
+        const radialSegments = 6;
+        let texture = new THREE.TextureLoader().load( 'http://localhost:63342/WebModelViewer3D/assets/textures/vent.jpg' );
+        let materialVent = new THREE.MeshBasicMaterial( { map: texture } );
+        const geometry = new THREE.ConeBufferGeometry(radius, height, radialSegments);
+        let vent = new THREE.Mesh(geometry, materialVent);
+        vent.position.y = 50;
+        vent.position.z = 305;
+        vent.position.x = 305;
+        scene.add(vent);
+        selectableObject.push(vent);
+    }
+    function addHuman(){
+        let loader = new OBJLoader();
+        loader.load('http://localhost:63342/WebModelViewer3D/assets/obj/human.obj',
+            function ( object ) {
+                object.traverse( function ( child ) {
+                    if ( child.material ) {
+                        child.material = new THREE.MeshBasicMaterial({color: "#0ddeb4"})
+                    }
+                } );
+
+                object.material = new THREE.MeshBasicMaterial({color: "#4cde24"})
+
+                // object.name = "blabla";
+
+
+                object.scale.set(4, 5, 4);
+                object.position.x = 300;
+                object.position.y = 0;
+                object.position.z = 300;
+
+                scene.add( object );
+                selectableObject.push(object);
+
+
+
+                // console.log(scene.getObjectByName("blabla"));
+                // scene.remove(scene.getObjectByName("blabla"));
+            },
+            // called when loading is in progresses
+            function ( xhr ) {
+                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            },
+            // called when loading has errors
+            function ( error ) {
+                console.log( 'An error happened' );
+            }
+        );
     }
 
 
