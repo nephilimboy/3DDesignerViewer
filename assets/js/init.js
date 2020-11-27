@@ -49,6 +49,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     let selectMode = "0";
     let selectObjDIV, panWordDIV, moveObjDIV, rotateObjDIV, scaleObjDIV;
 
+
+    let dots = [];
+
     function init() {
 
         scene = new THREE.Scene();
@@ -89,7 +92,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             else if (transferControl.mode == "translate") {
 
                 event.target.object.position.y = 15;
-                event.target.object.position.z = Math.floor(event.target.object.position.z / 10) * 10 + 5;
+                event.target.object.position.z = Math.floor(event.target.object.position.z / 10) * 10;
                 event.target.object.position.x = Math.floor(event.target.object.position.x / 10) * 10 + 5;
             }
             else if (transferControl.mode == "scale") {
@@ -183,7 +186,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('drawPoint').addEventListener("click", xxxx, false);
 
 
-        const geometry2 = new THREE.BoxBufferGeometry(10, 30, 5);
+        const geometry2 = new THREE.BoxBufferGeometry(15, 30, 15);
         geometry2.verticesNeedUpdate = true;
         const material2 = new THREE.MeshBasicMaterial({color: 0x032538});
         let cube2 = new THREE.Mesh(geometry2, material2);
@@ -203,19 +206,55 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 vertex.fromBufferAttribute(positionAttribute, i);
                 cube2.localToWorld(vertex);
                 if (vertex.y == 0) {
-                    console.log(vertex.x + " | " + vertex.z )
+                    // console.log(vertex.x + " | " + vertex.z )
                     vertx.push({
-                        x:  vertex.x /10,
-                        y: vertex.z /10
+                        x:  Math.floor(vertex.x/10) ,
+                        y: Math.floor(vertex.z/10)
                     });
                 }
             }
+
+            dots = [];
             vertx.forEach(vert =>{
                 vertx.forEach(vertLoop =>{
-                    bresenhamAlgorithm(vert.x, vert.y, vertLoop.x, vertLoop.y)
+                    plot(vert.x, vert.y, vertLoop.x, vertLoop.y)
                 });
             })
-            // bresenhamAlgorithm(0,0, 2,2)
+            dots = [];
+            // console.log(plot(0,0, 0.5,0.5))
+        }
+
+
+        function plot(x0, y0, x1, y1) {
+
+            var dx = Math.abs(x1 - x0),
+                dy = Math.abs(y1 - y0),
+                sx = (x0 < x1) ? 1 : -1,
+                sy = (y0 < y1) ? 1 : -1,
+                err = dx - dy;
+            while(true) {
+                dots.push({x:x0 , y: y0})
+                if ((x0 == x1) && (y0 == y1) || (dy<=1 && dx<=1)) break;
+                var e2 = 2 * err;
+                if (e2 >- dy) { err -= dy; x0 += sx; }
+                if (e2 < dx) { err += dx; y0 += sy; }
+            }
+            // console.log(dots)
+
+            dots.forEach(obj=>{
+                // console.log(obj);
+                let geometry2 = new THREE.BoxBufferGeometry(10, 50, 10);
+                let material2 = new THREE.MeshBasicMaterial({color: 0x633568});
+                let cube2 = new THREE.Mesh(geometry2, material2);
+
+                cube2.position.x = Math.floor(obj.x * 10) + 5 ;
+                cube2.position.z = Math.floor(obj.y * 10) + 5;
+
+                // cube2.position.x = Math.floor(10 * );
+                cube2.position.y = 25;
+                // cube2.position.z =  Math.floor(10* obj.y);
+                scene.add(cube2);
+            })
         }
 
         function bresenhamAlgorithm(x1,y1, x2,y2) {
