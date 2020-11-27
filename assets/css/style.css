@@ -9441,3 +9441,62 @@ path {
   stroke-width: 1;
   shape-rendering: crispEdges;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+.icon-bar1 {
+  width: 100% !important; /* Full-width */
+  background-color: #555 !important; /* Dark-grey background */
+  overflow: auto !important; /* Overflow due to float */
+  padding-top:10px ;
+  height: 100%;
+}
+
+
+.icon-bar1 a {
+  border: 1px solid #fff6f4;
+  padding-right: 1px;
+  float: left;
+  text-align: center;
+  width: 10%;
+  /*background-color: #3b434b;*/
+  transition: all 0.3s ease;
+  color: white;
+  margin-right: 5px;
+  font-size: 20px;
+  background-image: linear-gradient(#202b4f, #566464);
+  border-radius: 3px;
+}
+
+.icon-bar1 a:hover {
+  background-color: #d4d4d4 !important; /* Add a hover color */
+}
+
+.active1 {
+  background-color: #4CAF50; /* Add an active/current color */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
