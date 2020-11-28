@@ -13,7 +13,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     $(window).on('load', function () {
         init();
-        creatCellViewer()
+        createCellViewer();
         animate();
     });
 
@@ -313,7 +313,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     }
     // ToDo change grid size based on the user's input
-    function creatCellViewer() {
+    function createCellViewer() {
         let width = $(d3Container).width();
         let height = $(d3Container).height();
 
@@ -756,11 +756,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         a.click();
     }
 
-
-    function test(){
-        console.log(scene);
-    }
-    
     function handle3DInput(inp){
         transferControl.detach();
         if (inp.target.files && inp.target.files[0]) {
@@ -769,34 +764,57 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 var loader = new THREE.ObjectLoader();
                 loader.load(e.target.result,
                     function ( json ) {
-
-                        // console.log(json);
                         // while(scene.children.length > 0){
                         //     scene.remove(scene.children[0]);
                         // }
-
                         scene.remove(scene.getObjectByName("transferControl"));
                         scene.remove(scene.getObjectByName("gridHelper"));
-
                         scene = json;
-
-
                         addGridHelperAndTransferControl();
-                        console.log(scene)
-                        // let gridHelper = new THREE.GridHelper(600, 60, 0x0000ff, 0x808080);
-                        // gridHelper.position.x = 300;
-                        // gridHelper.position.z = 300;
-                        // scene.add(gridHelper);
-
+                        extractObjectFromSceneToArrays();
                     }
                 );
-
-
             };
             reader.readAsDataURL(inp.target.files[0]);
         }
-
     }
 
+    function extractObjectFromSceneToArrays(){
+        // Clear all arrays
+        wallObjects = [];
+        doorObjects = [];
+        windowObjects = [];
+        ventObjects = [];
+        humanObjects = [];
+        selectableObject = [];
+        currentSelectedObj = null;
+
+        // Read the scene's children and extract the OBJs
+        scene.children.forEach(child=>{
+            if(child.name.startsWith("wall_")){
+                wallObjects.push(child);
+                selectableObject.push(child);
+            }
+            else if(child.name.startsWith("door_")){
+                doorObjects.push(child);
+                selectableObject.push(child);
+            }
+            else if(child.name.startsWith("window_")){
+                windowObjects.push(child);
+                selectableObject.push(child);
+            }
+            else if(child.name.startsWith("vent_")){
+                ventObjects.push(child);
+                selectableObject.push(child);
+            }
+            else if(child.name.startsWith("P_human_")){
+                // humanObjects.push(child.children);
+                // selectableObject.push(child.children);
+            }
+        });
+    }
+    function test(){
+        console.log(scene);
+    }
 
 })(jQuery);
