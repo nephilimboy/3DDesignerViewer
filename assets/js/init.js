@@ -64,7 +64,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
 
     function init() {
-
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0xcccccc);
 
@@ -88,7 +87,46 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         controls.maxDistance = 1000;
         controls.maxPolarAngle = Math.PI / 2;
 
+        // lights
+        const dirLight1 = new THREE.DirectionalLight(0xffffff);
+        dirLight1.position.set(1, 1, 1);
+        scene.add(dirLight1);
+        const dirLight2 = new THREE.DirectionalLight(0x002288);
+        dirLight2.position.set(-1, -1, -1);
+        scene.add(dirLight2);
+        const ambientLight = new THREE.AmbientLight(0x222222);
+        scene.add(ambientLight);
 
+        addGridHelperAndTransferControl();
+
+        window.addEventListener('resize', onResizeContainer, false);
+        renderer.domElement.addEventListener('click', clickOnCanvas, false);
+
+        selectObjDIV = document.getElementById('selectObj');
+        panWordDIV = document.getElementById('panWord');
+        moveObjDIV = document.getElementById('moveObj');
+        rotateObjDIV = document.getElementById('rotateObj');
+        scaleObjDIV = document.getElementById('scaleObj');
+
+        selectObjDIV.addEventListener("click", selectObj, false);
+        panWordDIV.addEventListener("click", panWord, false);
+        moveObjDIV.addEventListener("click", moveObj, false);
+        rotateObjDIV.addEventListener("click", rotateObj, false);
+        scaleObjDIV.addEventListener("click", scaleObj, false);
+        document.getElementById('addWall').addEventListener("click", addWall, false);
+        document.getElementById('addDoor').addEventListener("click", addDoor, false);
+        document.getElementById('addWindow').addEventListener("click", addWindow, false);
+        document.getElementById('addVent').addEventListener("click", addVent, false);
+        document.getElementById('addHuman').addEventListener("click", addHuman, false);
+        document.getElementById('removeOBJ').addEventListener("click", removeOBJ, false);
+        document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
+        document.getElementById('optimizeCellView').addEventListener("click", optimizeCellView, false);
+        document.getElementById('exportSceneToJSON').addEventListener("click", exportSceneToJSON, false);
+        document.getElementById('resetCamera').addEventListener("click", test, false);
+        document.getElementById('3DInput').addEventListener('change', handle3DInput, false);
+    }
+
+    function addGridHelperAndTransferControl(){
         transferControl = new TransformControls(camera, renderer.domElement);
         // transferControl.setMode( "rotate" );
         transferControl.setRotationSnap(Math.PI / 12);
@@ -96,12 +134,10 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         transferControl.setMode("scale");
         transferControl.setScaleSnap(1);
 
-
         transferControl.addEventListener('change', render);
         transferControl.addEventListener('dragging-changed', function (event) {
             controls.enabled = !event.value;
             if (transferControl.mode == "rotate") {
-
                 // event.target.object.rotation.z = 0;
                 // event.target.object.rotation.x = 0
             }
@@ -131,51 +167,17 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 // event.target.object.scale.z = 10;
             }
         });
-
+        transferControl.name = "transferControl";
         scene.add(transferControl);
 
-        const gridHelper = new THREE.GridHelper(600, 60, 0x0000ff, 0x808080);
+        let gridHelper = new THREE.GridHelper(600, 60, 0x0000ff, 0x808080);
         gridHelper.position.x = 300;
         gridHelper.position.z = 300;
+        gridHelper.name = "gridHelper";
         scene.add(gridHelper);
-
-        // lights
-        const dirLight1 = new THREE.DirectionalLight(0xffffff);
-        dirLight1.position.set(1, 1, 1);
-        scene.add(dirLight1);
-        const dirLight2 = new THREE.DirectionalLight(0x002288);
-        dirLight2.position.set(-1, -1, -1);
-        scene.add(dirLight2);
-        const ambientLight = new THREE.AmbientLight(0x222222);
-        scene.add(ambientLight);
-
-        window.addEventListener('resize', onResizeContainer, false);
-        renderer.domElement.addEventListener('click', clickOnCanvas, false);
-
-
-        selectObjDIV = document.getElementById('selectObj');
-        panWordDIV = document.getElementById('panWord');
-        moveObjDIV = document.getElementById('moveObj');
-        rotateObjDIV = document.getElementById('rotateObj');
-        scaleObjDIV = document.getElementById('scaleObj');
-
-        selectObjDIV.addEventListener("click", selectObj, false);
-        panWordDIV.addEventListener("click", panWord, false);
-        moveObjDIV.addEventListener("click", moveObj, false);
-        rotateObjDIV.addEventListener("click", rotateObj, false);
-        scaleObjDIV.addEventListener("click", scaleObj, false);
-        document.getElementById('addWall').addEventListener("click", addWall, false);
-        document.getElementById('addDoor').addEventListener("click", addDoor, false);
-        document.getElementById('addWindow').addEventListener("click", addWindow, false);
-        document.getElementById('addVent').addEventListener("click", addVent, false);
-        document.getElementById('addHuman').addEventListener("click", addHuman, false);
-        document.getElementById('removeOBJ').addEventListener("click", removeOBJ, false);
-        document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
-        document.getElementById('optimizeCellView').addEventListener("click", optimizeCellView, false);
     }
 
     function updateCellView() {
-
         // Reset the arrays
         wallCellCordinate = [];
         doorCellCordinate = [];
@@ -304,14 +306,12 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             humanCellCordinate.forEach(cord=>{
                 document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#e23fff";
             });
-
         }
         else{
             console.log("Somethings wrong with coordinates")
         }
 
     }
-
     // ToDo change grid size based on the user's input
     function creatCellViewer() {
         let width = $(d3Container).width();
@@ -702,7 +702,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         currentSelectedObj = null;
     }
 
-
     function move(objName, speed, destX, destY) {
         var mesh = scene.getObjectByName(objName);
         // console.log(mesh.position.x)
@@ -738,77 +737,66 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     }
 
+    function exportSceneToJSON(){
+        transferControl.detach();
+        scene.remove(controls);
+        scene.remove(scene.getObjectByName("transferControl"));
+        scene.remove(scene.getObjectByName("gridHelper"));
+        var result=scene.toJSON();
+        var output =JSON.stringify(result);
+        addGridHelperAndTransferControl();
+        download(output, 'scene.json', 'application/json');
+    }
+
+    function download(content, fileName, contentType) {
+        var a = document.createElement("a");
+        var file = new Blob([content], {type: contentType});
+        a.href = URL.createObjectURL(file);
+        a.download = fileName;
+        a.click();
+    }
+
+
+    function test(){
+        console.log(scene);
+    }
+    
+    function handle3DInput(inp){
+        transferControl.detach();
+        if (inp.target.files && inp.target.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var loader = new THREE.ObjectLoader();
+                loader.load(e.target.result,
+                    function ( json ) {
+
+                        // console.log(json);
+                        // while(scene.children.length > 0){
+                        //     scene.remove(scene.children[0]);
+                        // }
+
+                        scene.remove(scene.getObjectByName("transferControl"));
+                        scene.remove(scene.getObjectByName("gridHelper"));
+
+                        scene = json;
+
+
+                        addGridHelperAndTransferControl();
+                        console.log(scene)
+                        // let gridHelper = new THREE.GridHelper(600, 60, 0x0000ff, 0x808080);
+                        // gridHelper.position.x = 300;
+                        // gridHelper.position.z = 300;
+                        // scene.add(gridHelper);
+
+                    }
+                );
+
+
+            };
+            reader.readAsDataURL(inp.target.files[0]);
+        }
+
+    }
+
+
 })(jQuery);
-
-
-// dragControls = new DragControls( [cube], camera, renderer.domElement );
-// dragControls.enabled = false;
-// dragControls.addEventListener( 'dragstart', function () { controls.enabled = false; } );
-// dragControls.addEventListener ( 'drag', function( event ){
-//     event.object.position.y = 10;
-//     event.object.position.z = Math.floor(event.object.position.z/ 10)* 10 + 5;
-//     event.object.position.x = Math.floor(event.object.position.x/ 10)* 10 + 5;
-// })
-// dragControls.addEventListener( 'dragend', function () { controls.enabled = true; } );
-
-
-// function wallPositionCalculator(x, y) {
-//     return ([10 *(parseInt(x) + 0.5), 10 *(parseInt(y) + 0.5)])
-// }
-
-
-// fileInput.addEventListener('change', function (e) {
-//     var file = fileInput.files[0];
-//     // var textType = /text.*/;
-//     var reader = new FileReader();
-//     reader.onload = function (e) {
-//         var content = reader.result;
-//         //Here the content has been read successfuly
-//         // FileContent = content;
-//         // console.log(content);
-//
-//         var lines = content.split('\n');
-//         for (var line = 0; line < lines.length; line++) {
-//             FileContent.push(lines[line].split("=")[0].split(")")[0].split("(")[1])
-//         }
-//         createScene();
-//     };
-//     reader.readAsText(file);
-//
-// });
-//
-//
-// function createScene() {
-//     FileContent.forEach((val) => {
-//         if (typeof val !== 'undefined') {
-//
-//             let cube = new THREE.Mesh(geometry, material);
-//
-//             var geometry2 = new THREE.EdgesGeometry(cube.geometry);
-//
-//             var material2 = new THREE.LineBasicMaterial({color: 0x00a4ff, linewidth: 2});
-//
-//             var wireframe = new THREE.LineSegments(geometry2, material2);
-//
-//             // let temp = lines[line].split("=")[0].split(")")[0].split("(")[1];
-//             // console.log(temp.split(""));
-//             // console.log(lines[line].split("=")[0].split(")")[0].split("(")[1].split(",")[0]);
-//             // console.log(lines[line].split("=")[0].split(")")[0].split("(")[1].split(",")[1]);
-//             // scene.add( cube );
-//             let position = wallPositionCalculator(val.split(",")[0], val.split(",")[1]);
-//             console.log(position)
-//             cube.position.x = position[0];
-//             cube.position.y = 7.5;
-//             cube.position.z = position[1];
-//             wireframe.position.x = position[0];
-//             wireframe.position.y = 7.5;
-//             wireframe.position.z = position[1];
-//
-//             scene.add(cube);
-//             scene.add(wireframe);
-//
-//
-//             console.log();
-//         }
-//     })
-// }
