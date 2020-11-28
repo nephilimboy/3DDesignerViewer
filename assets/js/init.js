@@ -47,7 +47,14 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     var mouse = {x: 0, y: 0};
     let FileContent = [];
     let currentSelectedObj = null;
+    // For selecting Obj
     let selectableObject = [];
+    // All selectable Obj instead of walls
+    let wallObjects = [];
+    let doorObjects = [];
+    let windowObjects = [];
+    let ventObjects = [];
+    let humanObjects = [];
     // 0 for selectObj ; 1 for moveObj; 2 for rotateObj; 3 for scaleObj
     let selectMode = "0";
     let selectObjDIV, panWordDIV, moveObjDIV, rotateObjDIV, scaleObjDIV;
@@ -67,7 +74,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         var element = document.getElementById("Place3D");
         element.appendChild(renderer.domElement);
 
-        camera = new THREE.PerspectiveCamera(70, $(canvasContainer).width() / $(canvasContainer).height(), 1, 30000);
+        camera = new THREE.PerspectiveCamera(60, $(canvasContainer).width() / $(canvasContainer).height(), 1, 30000);
         camera.position.set(600, 300, 0);
 
         controls = new OrbitControls(camera, renderer.domElement);
@@ -93,9 +100,24 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             }
             else if (transferControl.mode == "translate") {
 
-                // event.target.object.position.y = 15;
+                if (currentSelectedObj.name.startsWith("wall_")) {
+                    event.target.object.position.y = 15;
+                }
+                else if (currentSelectedObj.name.startsWith("door_")) {
+                    event.target.object.position.y = 10;
+                }
+                else if (currentSelectedObj.name.startsWith("window_")) {
+                    event.target.object.position.y = 20;
+                }
+                else if (currentSelectedObj.name.startsWith("vent_")) {
+                    event.target.object.position.y = 50;
+                }
+                else if (currentSelectedObj.name.startsWith("human_")) {
+                    event.target.object.position.y = 0;
+                }
                 event.target.object.position.z = Math.floor(event.target.object.position.z / 10) * 10 + 5;
                 event.target.object.position.x = Math.floor(event.target.object.position.x / 10) * 10 + 5;
+
             }
             else if (transferControl.mode == "scale") {
                 // event.target.object.scale.y = 0;
@@ -107,15 +129,10 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-
         controls.screenSpacePanning = false;
-
-        controls.minDistance = 100;
-        controls.maxDistance = 500;
-
+        controls.minDistance = 50;
+        controls.maxDistance = 1000;
         controls.maxPolarAngle = Math.PI / 2;
-
-
 
         scene.add(transferControl);
 
@@ -155,19 +172,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('addWindow').addEventListener("click", addWindow, false);
         document.getElementById('addVent').addEventListener("click", addVent, false);
         document.getElementById('addHuman').addEventListener("click", addHuman, false);
+        document.getElementById('removeOBJ').addEventListener("click", removeOBJ, false);
         document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
-
-
-        // const geometry2 = new THREE.BoxBufferGeometry(15, 30, 15);
-        // geometry2.verticesNeedUpdate = true;
-        // const material2 = new THREE.MeshBasicMaterial({color: 0x032538});
-        // let cube2 = new THREE.Mesh(geometry2, material2);
-        // // cube2.position.x = 200;
-        // // cube2.position.z = 200;
-        // cube2.position.y = 15;
-        // scene.add(cube2);
-        // selectableObject.push(cube2);
-
 
         function bresenhamAlgorithm(x1,y1, x2,y2) {
             //Bresenham algorithm From Medium.com
@@ -274,10 +280,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         function updateCellView(){
 
             let cells = document.querySelectorAll('[id^="#"]');
-            // console.log(cells);
             cells.forEach(obj=>{
                 obj.style.fill = "#ffffff";
-            })
+            });
 
             selectableObject.forEach(selectableobj=>{
                 let geometry = selectableobj.geometry;
@@ -483,6 +488,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             //     //     }
             //     // } );
         }
+        // console.log(currentSelectedObj.name);
     }
 
     function panWord() {
@@ -573,12 +579,14 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     const material = new THREE.MeshBasicMaterial({color: 0x032538});
 
     function addWall() {
-        let cube = new THREE.Mesh(geometry, material);
-        cube.position.y = 15;
-        cube.position.z = 305;
-        cube.position.x = 305;
-        scene.add(cube);
-        selectableObject.push(cube);
+        let wall = new THREE.Mesh(geometry, material);
+        wall.position.y = 15;
+        wall.position.z = 305;
+        wall.position.x = 305;
+        wallObjects.push(wall);
+        wall.name = "wall_" + wallObjects.length;
+        scene.add(wall);
+        selectableObject.push(wall);
     }
 
     function addDoor() {
@@ -589,21 +597,25 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         door.position.y = 10;
         door.position.z = 305;
         door.position.x = 305;
+        doorObjects.push(door);
+        door.name = "door_" + doorObjects.length;
         scene.add(door);
-        selectableObject.push(door)
-
+        selectableObject.push(door);
     }
 
     function addWindow() {
         let windowGeometry = new THREE.BoxBufferGeometry(9, 10, 6);
         let texture = new THREE.TextureLoader().load( 'http://localhost:63342/WebModelViewer3D/assets/textures/window.png' );
         let materialWindow = new THREE.MeshBasicMaterial( { map: texture } );
-        let cube = new THREE.Mesh(windowGeometry, materialWindow);
-        cube.position.y = 20;
-        cube.position.z = 305;
-        cube.position.x = 305;
-        scene.add(cube);
-        selectableObject.push(cube);
+        let window = new THREE.Mesh(windowGeometry, materialWindow);
+        window.position.y = 20;
+        window.position.z = 305;
+        window.position.x = 305;
+        windowObjects.push(window);
+        window.name = "window_" + windowObjects.length;
+        scene.add(window);
+        selectableObject.push(window);
+
     }
 
     function addVent() {
@@ -618,46 +630,118 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         vent.position.y = 50;
         vent.position.z = 305;
         vent.position.x = 305;
+        ventObjects.push(vent);
+        vent.name = "vent_" + ventObjects.length;
         scene.add(vent);
         selectableObject.push(vent);
+
     }
+
     function addHuman(){
         let loader = new OBJLoader();
         loader.load('http://localhost:63342/WebModelViewer3D/assets/obj/human.obj',
             function ( object ) {
                 object.traverse( function ( child ) {
                     if ( child.material ) {
-                        child.material = new THREE.MeshBasicMaterial({color: "#0ddeb4"})
+                        // child.material = new THREE.MeshBasicMaterial({color: "#0ddeb4"})
+                        humanObjects.push(child);
+                        child.name = "human_" + humanObjects.length;
+                        selectableObject.push(child);
                     }
                 } );
-
-                object.material = new THREE.MeshBasicMaterial({color: "#4cde24"})
-
-                // object.name = "blabla";
-
-
-                object.scale.set(4, 5, 4);
-                object.position.x = 300;
-                object.position.y = 0;
-                object.position.z = 300;
-
+                object.name = "P_human_" + humanObjects.length;
                 scene.add( object );
-                selectableObject.push(object);
-
-
-
+                let obj = scene.getObjectByName("human_" + humanObjects.length);
+                obj.position.x = 300;
+                obj.position.y = 0;
+                obj.position.z = 300;
+                obj.scale.set(4, 5, 4);
                 // console.log(scene.getObjectByName("blabla"));
                 // scene.remove(scene.getObjectByName("blabla"));
             },
             // called when loading is in progresses
             function ( xhr ) {
-                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+                // console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
             },
             // called when loading has errors
             function ( error ) {
-                console.log( 'An error happened' );
+                console.log( 'An error happened on loading the OBJ file' );
             }
         );
+    }
+
+    function removeOBJ(){
+        transferControl.detach();
+        // Removing object from its array (sync)
+        if (currentSelectedObj.name.startsWith("wall_")) {
+            let temp = [];
+            wallObjects.forEach(obj=>{
+               if(obj.name != currentSelectedObj.name){
+                   temp.push(obj);
+               }
+            });
+            wallObjects =[];
+            wallObjects = temp;
+        }
+        else if (currentSelectedObj.name.startsWith("door_")) {
+            let temp = [];
+            doorObjects.forEach(obj=>{
+                if(obj.name != currentSelectedObj.name){
+                    temp.push(obj);
+                }
+            });
+            doorObjects =[];
+            doorObjects = temp;
+        }
+        else if (currentSelectedObj.name.startsWith("window_")) {
+            let temp = [];
+            windowObjects.forEach(obj=>{
+                if(obj.name != currentSelectedObj.name){
+                    temp.push(obj);
+                }
+            });
+            windowObjects =[];
+            windowObjects = temp;
+        }
+        else if (currentSelectedObj.name.startsWith("vent_")) {
+            let temp = [];
+            ventObjects.forEach(obj=>{
+                if(obj.name != currentSelectedObj.name){
+                    temp.push(obj);
+                }
+            });
+            ventObjects =[];
+            ventObjects = temp;
+        }
+        else if (currentSelectedObj.name.startsWith("human_")) {
+            let temp = [];
+            humanObjects.forEach(obj=>{
+                if(obj.name != currentSelectedObj.name){
+                    temp.push(obj);
+                }
+            });
+            humanObjects =[];
+            humanObjects = temp;
+        }
+
+        // Removing From Selectable object array
+        let temp = [];
+        selectableObject.forEach(obj=>{
+            if(obj.name != currentSelectedObj.name){
+                temp.push(obj);
+            }
+        });
+        selectableObject =[];
+        selectableObject = temp;
+
+        // Since Obj loaded, loads the human obj as a group we need to remove the parent(root) instead of the child
+        if(currentSelectedObj.name.startsWith("human_")) {
+            scene.remove(scene.getObjectByName("P_" + currentSelectedObj.name));
+        }
+        else{
+            scene.remove(currentSelectedObj.name);
+        }
+        currentSelectedObj = null;
     }
 
 
