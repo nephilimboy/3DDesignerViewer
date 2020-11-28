@@ -381,7 +381,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             .style("stroke", "#222");
 
 
-
+        // Adding arrow and lines
         g.append("svg:defs").append("svg:marker")
             .attr("id", "triangle")
             .attr("refX", 6)
