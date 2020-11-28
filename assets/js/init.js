@@ -1,13 +1,8 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.122/build/three.module.js";
 import {OrbitControls} from "https://cdn.jsdelivr.net/npm/three@0.114/examples/jsm/controls/OrbitControls.js";
 import {TransformControls} from "https://cdn.jsdelivr.net/npm/three@0.122/examples/jsm/controls/TransformControls.js";
-// import {ThreeBsp} from "";
-// import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.122/examples/jsm/controls/OrbitControls.js";
 import {DragControls} from "https://cdn.jsdelivr.net/npm/three@0.114/examples/jsm/controls/DragControls.js";
 import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
-// import { TransformControls } from 'http://threejs.org/examples/jsm/controls/TransformControls.js';
-
-
 
 
 (function ($) {
@@ -39,7 +34,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         horizontalMargin: 5,
     };
     var grid = GridStack.init(options);
-    grid.on('resizestop', function() {
+    grid.on('resizestop', function () {
         onResizeContainer();
     });
 
@@ -58,7 +53,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     // 0 for selectObj ; 1 for moveObj; 2 for rotateObj; 3 for scaleObj
     let selectMode = "0";
     let selectObjDIV, panWordDIV, moveObjDIV, rotateObjDIV, scaleObjDIV;
-
+    const geometry = new THREE.BoxBufferGeometry(10, 30, 5);
+    const material = new THREE.MeshBasicMaterial({color: 0x032538});
 
 
     function init() {
@@ -78,8 +74,13 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         camera.position.set(600, 300, 0);
 
         controls = new OrbitControls(camera, renderer.domElement);
-        controls.target.set( 300, 0, 300 );
-
+        controls.target.set(300, 0, 300);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = false;
+        controls.minDistance = 50;
+        controls.maxDistance = 1000;
+        controls.maxPolarAngle = Math.PI / 2;
 
 
         transferControl = new TransformControls(camera, renderer.domElement);
@@ -123,16 +124,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 // event.target.object.scale.y = 0;
                 // event.target.object.scale.z = 10;
             }
-
-
         });
-
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.screenSpacePanning = false;
-        controls.minDistance = 50;
-        controls.maxDistance = 1000;
-        controls.maxPolarAngle = Math.PI / 2;
 
         scene.add(transferControl);
 
@@ -155,7 +147,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         renderer.domElement.addEventListener('click', clickOnCanvas, false);
 
 
-
         selectObjDIV = document.getElementById('selectObj');
         panWordDIV = document.getElementById('panWord');
         moveObjDIV = document.getElementById('moveObj');
@@ -174,193 +165,83 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('addHuman').addEventListener("click", addHuman, false);
         document.getElementById('removeOBJ').addEventListener("click", removeOBJ, false);
         document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
+    }
 
-        function bresenhamAlgorithm(x1,y1, x2,y2) {
-            //Bresenham algorithm From Medium.com
+    function updateCellView() {
 
-            // Iterators, counters required by algorithm
-            let AllPoints = [];
-            let x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
-            // Calculate line deltas
-            dx = x2 - x1;
-            dy = y2 - y1;
-            // Create a positive copy of deltas (makes iterating easier)
-            dx1 = Math.abs(dx);
-            dy1 = Math.abs(dy);
-            // Calculate error intervals for both axis
-            px = 2 * dy1 - dx1;
-            py = 2 * dx1 - dy1;
-            // The line is X-axis dominant
-            if (dy1 <= dx1) {
-                // Line is drawn left to right
-                if (dx >= 0) {
-                    x = x1;
-                    y = y1;
-                    xe = x2;
-                } else { // Line is drawn right to left (swap ends)
-                    x = x2;
-                    y = y2;
-                    xe = x1;
-                }
-                AllPoints.push({x:x , y:y});
-                // console.log(x, y); // Draw first pixel
-                // Rasterize the line
-                for (i = 0; x < xe; i++) {
-                    x = x + 1;
-                    // Deal with octants...
-                    if (px < 0) {
-                        px = px + 2 * dy1;
-                    } else {
-                        if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) {
-                            y = y + 1;
-                        } else {
-                            y = y - 1;
-                        }
-                        px = px + 2 * (dy1 - dx1);
-                    }
-                    // Draw pixel from line span at
-                    // currently rasterized position
-                    // console.log("------- 2 ------")
-                    // console.log(x, y);
-                    AllPoints.push({x:x , y:y});
-                }
-            } else { // The line is Y-axis dominant
-                // Line is drawn bottom to top
-                if (dy >= 0) {
-                    x = x1;
-                    y = y1;
-                    ye = y2;
-                } else { // Line is drawn top to bottom
-                    x = x2;
-                    y = y2;
-                    ye = y1;
-                }
-                // console.log("------- 3 ------")
-                // console.log(x, y); // Draw first pixel
-                AllPoints.push({x:x , y:y});
-                // Rasterize the line
-                for (i = 0; y < ye; i++) {
-                    y = y + 1;
-                    // Deal with octants...
-                    if (py <= 0) {
-                        py = py + 2 * dx1;
-                    } else {
-                        if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) {
-                            x = x + 1;
-                        } else {
-                            x = x - 1;
-                        }
-                        py = py + 2 * (dx1 - dy1);
-                    }
-                    // Draw pixel from line span at
-                    // currently rasterized position
-                    // console.log("------- 4 ------")
-                    // console.log(x, y);
-                    AllPoints.push({x:x , y:y});
+        let cells = document.querySelectorAll('[id^="#"]');
+        cells.forEach(obj => {
+            obj.style.fill = "#ffffff";
+        });
+        // Update cell walls
+        wallObjects.forEach(selectableobj => {
+            let geometry = selectableobj.geometry;
+            let positionAttribute = geometry.getAttribute('position');
+            let vertex = new THREE.Vector3();
+            let vertx = [];
+            for (let i = 0; i < 8; i++) {
+                vertex.fromBufferAttribute(positionAttribute, i);
+                selectableobj.localToWorld(vertex);
+                if (vertex.y == 0) {
+                    // console.log(vertex.x + " | " + vertex.z )
+                    vertx.push({
+                        x: Math.floor(vertex.x / 10),
+                        y: Math.floor(vertex.z / 10)
+                    });
                 }
             }
-            // console.log(AllPoints);
-
-            AllPoints.forEach(obj=>{
-                // console.log(obj);
-                let geometry2 = new THREE.BoxBufferGeometry(10, 50, 10);
-                let material2 = new THREE.MeshBasicMaterial({color: 0x633568});
-                let cube2 = new THREE.Mesh(geometry2, material2);
-
-                cube2.position.x = Math.floor(obj.x) * 10 - 5;
-                cube2.position.z = Math.floor(obj.y) * 10 -5;
-
-                // cube2.position.x = Math.floor(10 * );
-                cube2.position.y = 25;
-                // cube2.position.z =  Math.floor(10* obj.y);
-                scene.add(cube2);
-            })
-        }
-
-        function updateCellView(){
-
-            let cells = document.querySelectorAll('[id^="#"]');
-            cells.forEach(obj=>{
-                obj.style.fill = "#ffffff";
-            });
-
-            selectableObject.forEach(selectableobj=>{
-                let geometry = selectableobj.geometry;
-                let positionAttribute = geometry.getAttribute('position');
-                let vertex = new THREE.Vector3();
-                let vertx = [];
-                for (let i = 0; i < 8; i++) {
-                    vertex.fromBufferAttribute(positionAttribute, i);
-                    selectableobj.localToWorld(vertex);
-                    if (vertex.y == 0) {
-                        // console.log(vertex.x + " | " + vertex.z )
-                        vertx.push({
-                            x:  Math.floor(vertex.x/10) ,
-                            y: Math.floor(vertex.z/10)
-                        });
-                    }
+            // The Bresenham's algorithm
+            let dots = [];
+            let x0 = vertx[0].x;
+            let y0 = vertx[0].y;
+            let x1 = vertx[2].x;
+            let y1 = vertx[2].y;
+            var dx = Math.abs(x1 - x0),
+                dy = Math.abs(y1 - y0),
+                sx = (x0 < x1) ? 1 : -1,
+                sy = (y0 < y1) ? 1 : -1,
+                err = dx - dy;
+            while (true) {
+                dots.push({x: x0, y: y0})
+                if ((x0 == x1) && (y0 == y1) || (dy <= 1 && dx <= 1)) break;
+                var e2 = 2 * err;
+                if (e2 > -dy) {
+                    err -= dy;
+                    x0 += sx;
                 }
-
-                // // Sort based on X
-                // // console.log(vertx);
-                // let maxXpoint = null;
-                // let maxYpoint =null;
-                //
-                // function sortByPosition(a, b){
-                //     if (a.x == b.x) return a.y - b.y;
-                //     return a.x - b.x;
-                // }
-                // function sortByPosition(a, b){
-                //     if (a.y == b.y) return a.x - b.x;
-                //     return a.y - b.y;
-                // }
-
-
-
-
-                let dots = [];
-
-                // console.log(maxX + " | " + minY);
-                // console.log(minX + " | " + maxY);
-
-                let x0 = vertx[0].x;
-                let y0 = vertx[0].y;
-                let x1 = vertx[2].x;
-                let y1 = vertx[2].y;
-                var dx = Math.abs(x1 - x0),
-                    dy = Math.abs(y1 - y0),
-                    sx = (x0 < x1) ? 1 : -1,
-                    sy = (y0 < y1) ? 1 : -1,
-                    err = dx - dy;
-                while (true) {
-                    dots.push({x: x0, y: y0})
-                    if ((x0 == x1) && (y0 == y1) || (dy <= 1 && dx <= 1)) break;
-                    var e2 = 2 * err;
-                    if (e2 > -dy) {
-                        err -= dy;
-                        x0 += sx;
-                    }
-                    if (e2 < dx) {
-                        err += dx;
-                        y0 += sy;
-                    }
+                if (e2 < dx) {
+                    err += dx;
+                    y0 += sy;
                 }
-
-
-                dots.forEach(obj=>{
-                    let x = Math.floor(obj.x) ;
-                    let z = Math.floor(obj.y);
-                    document.getElementById('#'+x + '_' + z).style.fill = "#000000";
-                })
-
-
+            }
+            // Adding cell walls to the cell view
+            dots.forEach(obj => {
+                let x = Math.floor(obj.x);
+                let z = Math.floor(obj.y);
+                document.getElementById('#' + x + '_' + z).style.fill = "#000000";
             })
-        }
+        });
 
+        // Update cell doors
+        doorObjects.forEach(obj =>{
+            document.getElementById('#' + Math.floor(obj.position.x / 10) + '_' + Math.floor(obj.position.z / 10)).style.fill = "#00ff0c";
+        });
+        // Update cell windows
+        windowObjects.forEach(obj =>{
+            document.getElementById('#' + Math.floor(obj.position.x / 10) + '_' + Math.floor(obj.position.z / 10)).style.fill = "#0064ff";
+        });
+        // Update cell vents
+        ventObjects.forEach(obj =>{
+            document.getElementById('#' + Math.floor(obj.position.x / 10) + '_' + Math.floor(obj.position.z / 10)).style.fill = "#ffe812";
+        });
+        // Update cell vents
+        humanObjects.forEach(obj =>{
+            document.getElementById('#' + Math.floor(obj.position.x / 10) + '_' + Math.floor(obj.position.z / 10)).style.fill = "#e23fff";
+        });
     }
 
     // ToDo change grid size based on the user's input
-    function creatCellViewer(){
+    function creatCellViewer() {
         let width = $(d3Container).width();
         let height = $(d3Container).height();
 
@@ -368,8 +249,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         var grid = d3.select("#cellView")
             .append("svg")
             // ToDo change the width/height dynamically based on the on UI grid change event
-            .attr("width",  $(d3Container).width())
-            .attr("height",  $(d3Container).height())
+            .attr("width", $(d3Container).width())
+            .attr("height", $(d3Container).height())
 
         grid.call(d3.zoom()
             .extent([[0, 0], [width, height]])
@@ -385,34 +266,43 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             .attr("class", "rowTable");
 
         var column = row.selectAll(".sqrTable")
-            .data(function(d) { return d; })
+            .data(function (d) {
+                return d;
+            })
             .enter().append("rect")
-            .attr("class","sqrTable")
-            .attr("id", function(d, i) {
+            .attr("class", "sqrTable")
+            .attr("id", function (d, i) {
                 let x = 0;
                 let y = 0;
-                if(d.x > 10){
+                if (d.x > 10) {
                     x = Math.floor(d.x / 10);
                 }
-                if(d.y > 10){
+                if (d.y > 10) {
                     y = Math.floor(d.y / 10);
                 }
                 // console.log(x + "_" + y)
-                return '#'+ x + "_" + y;
+                return '#' + x + "_" + y;
             })
-            .attr("x", function(d) { return d.x; })
-            .attr("y", function(d) { return d.y; })
-            .attr("width", function(d) { return d.width; })
-            .attr("height", function(d) { return d.height; })
+            .attr("x", function (d) {
+                return d.x;
+            })
+            .attr("y", function (d) {
+                return d.y;
+            })
+            .attr("width", function (d) {
+                return d.width;
+            })
+            .attr("height", function (d) {
+                return d.height;
+            })
             .style("fill", "#e6e6e6")
             .style("stroke", "#222");
-
-
 
 
         function zoomed({transform}) {
             g.attr("transform", transform);
         }
+
         function gridData() {
             var data = new Array();
             var xpos = 1;
@@ -422,7 +312,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             var click = 0;
             // iterate for rows
             for (var row = 0; row < 60; row++) {
-                data.push( new Array() );
+                data.push(new Array());
                 // iterate for cells/columns inside rows
                 for (var column = 0; column < 60; column++) {
                     data[row].push({
@@ -454,7 +344,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         event.preventDefault();
         // renderer.setSize($(canvasContainer).width(), $(canvasContainer).height());
         mouse.x = (event.offsetX / $(canvasContainer).width()) * 2 - 1;
-        mouse.y = -(event.offsetY /$(canvasContainer).height()) * 2 + 1;
+        mouse.y = -(event.offsetY / $(canvasContainer).height()) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
         var intersects = raycaster.intersectObjects(selectableObject, true);
         if (intersects.length > 0) {
@@ -575,9 +465,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         }
     }
 
-    const geometry = new THREE.BoxBufferGeometry(10, 30, 5);
-    const material = new THREE.MeshBasicMaterial({color: 0x032538});
-
     function addWall() {
         let wall = new THREE.Mesh(geometry, material);
         wall.position.y = 15;
@@ -590,9 +477,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     }
 
     function addDoor() {
-        let texture = new THREE.TextureLoader().load( 'http://localhost:63342/WebModelViewer3D/assets/textures/door.jpg' );
+        let texture = new THREE.TextureLoader().load('http://localhost:63342/WebModelViewer3D/assets/textures/door.jpg');
         let doorGeometry = new THREE.BoxBufferGeometry(9, 20, 6);
-        let doormaterial = new THREE.MeshBasicMaterial( { map: texture } );
+        let doormaterial = new THREE.MeshBasicMaterial({map: texture});
         let door = new THREE.Mesh(doorGeometry, doormaterial);
         door.position.y = 10;
         door.position.z = 305;
@@ -605,8 +492,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     function addWindow() {
         let windowGeometry = new THREE.BoxBufferGeometry(9, 10, 6);
-        let texture = new THREE.TextureLoader().load( 'http://localhost:63342/WebModelViewer3D/assets/textures/window.png' );
-        let materialWindow = new THREE.MeshBasicMaterial( { map: texture } );
+        let texture = new THREE.TextureLoader().load('http://localhost:63342/WebModelViewer3D/assets/textures/window.png');
+        let materialWindow = new THREE.MeshBasicMaterial({map: texture});
         let window = new THREE.Mesh(windowGeometry, materialWindow);
         window.position.y = 20;
         window.position.z = 305;
@@ -620,11 +507,11 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     function addVent() {
 
-        const radius =  4;
-        const height =  15;
+        const radius = 4;
+        const height = 15;
         const radialSegments = 6;
-        let texture = new THREE.TextureLoader().load( 'http://localhost:63342/WebModelViewer3D/assets/textures/vent.jpg' );
-        let materialVent = new THREE.MeshBasicMaterial( { map: texture } );
+        let texture = new THREE.TextureLoader().load('http://localhost:63342/WebModelViewer3D/assets/textures/vent.jpg');
+        let materialVent = new THREE.MeshBasicMaterial({map: texture});
         const geometry = new THREE.ConeBufferGeometry(radius, height, radialSegments);
         let vent = new THREE.Mesh(geometry, materialVent);
         vent.position.y = 50;
@@ -637,20 +524,20 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     }
 
-    function addHuman(){
+    function addHuman() {
         let loader = new OBJLoader();
         loader.load('http://localhost:63342/WebModelViewer3D/assets/obj/human.obj',
-            function ( object ) {
-                object.traverse( function ( child ) {
-                    if ( child.material ) {
+            function (object) {
+                object.traverse(function (child) {
+                    if (child.material) {
                         // child.material = new THREE.MeshBasicMaterial({color: "#0ddeb4"})
                         humanObjects.push(child);
                         child.name = "human_" + humanObjects.length;
                         selectableObject.push(child);
                     }
-                } );
+                });
                 object.name = "P_human_" + humanObjects.length;
-                scene.add( object );
+                scene.add(object);
                 let obj = scene.getObjectByName("human_" + humanObjects.length);
                 obj.position.x = 300;
                 obj.position.y = 0;
@@ -660,86 +547,86 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 // scene.remove(scene.getObjectByName("blabla"));
             },
             // called when loading is in progresses
-            function ( xhr ) {
+            function (xhr) {
                 // console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
             },
             // called when loading has errors
-            function ( error ) {
-                console.log( 'An error happened on loading the OBJ file' );
+            function (error) {
+                console.log('An error happened on loading the OBJ file');
             }
         );
     }
 
-    function removeOBJ(){
+    function removeOBJ() {
         transferControl.detach();
         // Removing object from its array (sync)
         if (currentSelectedObj.name.startsWith("wall_")) {
             let temp = [];
-            wallObjects.forEach(obj=>{
-               if(obj.name != currentSelectedObj.name){
-                   temp.push(obj);
-               }
+            wallObjects.forEach(obj => {
+                if (obj.name != currentSelectedObj.name) {
+                    temp.push(obj);
+                }
             });
-            wallObjects =[];
+            wallObjects = [];
             wallObjects = temp;
         }
         else if (currentSelectedObj.name.startsWith("door_")) {
             let temp = [];
-            doorObjects.forEach(obj=>{
-                if(obj.name != currentSelectedObj.name){
+            doorObjects.forEach(obj => {
+                if (obj.name != currentSelectedObj.name) {
                     temp.push(obj);
                 }
             });
-            doorObjects =[];
+            doorObjects = [];
             doorObjects = temp;
         }
         else if (currentSelectedObj.name.startsWith("window_")) {
             let temp = [];
-            windowObjects.forEach(obj=>{
-                if(obj.name != currentSelectedObj.name){
+            windowObjects.forEach(obj => {
+                if (obj.name != currentSelectedObj.name) {
                     temp.push(obj);
                 }
             });
-            windowObjects =[];
+            windowObjects = [];
             windowObjects = temp;
         }
         else if (currentSelectedObj.name.startsWith("vent_")) {
             let temp = [];
-            ventObjects.forEach(obj=>{
-                if(obj.name != currentSelectedObj.name){
+            ventObjects.forEach(obj => {
+                if (obj.name != currentSelectedObj.name) {
                     temp.push(obj);
                 }
             });
-            ventObjects =[];
+            ventObjects = [];
             ventObjects = temp;
         }
         else if (currentSelectedObj.name.startsWith("human_")) {
             let temp = [];
-            humanObjects.forEach(obj=>{
-                if(obj.name != currentSelectedObj.name){
+            humanObjects.forEach(obj => {
+                if (obj.name != currentSelectedObj.name) {
                     temp.push(obj);
                 }
             });
-            humanObjects =[];
+            humanObjects = [];
             humanObjects = temp;
         }
 
         // Removing From Selectable object array
         let temp = [];
-        selectableObject.forEach(obj=>{
-            if(obj.name != currentSelectedObj.name){
+        selectableObject.forEach(obj => {
+            if (obj.name != currentSelectedObj.name) {
                 temp.push(obj);
             }
         });
-        selectableObject =[];
+        selectableObject = [];
         selectableObject = temp;
 
         // Since Obj loaded, loads the human obj as a group we need to remove the parent(root) instead of the child
-        if(currentSelectedObj.name.startsWith("human_")) {
+        if (currentSelectedObj.name.startsWith("human_")) {
             scene.remove(scene.getObjectByName("P_" + currentSelectedObj.name));
         }
-        else{
-            scene.remove(currentSelectedObj.name);
+        else {
+            scene.remove(scene.getObjectByName(currentSelectedObj.name));
         }
         currentSelectedObj = null;
     }
@@ -783,12 +670,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 })(jQuery);
 
 
-
-
-
-
-
-
 // dragControls = new DragControls( [cube], camera, renderer.domElement );
 // dragControls.enabled = false;
 // dragControls.addEventListener( 'dragstart', function () { controls.enabled = false; } );
@@ -798,12 +679,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 //     event.object.position.x = Math.floor(event.object.position.x/ 10)* 10 + 5;
 // })
 // dragControls.addEventListener( 'dragend', function () { controls.enabled = true; } );
-
-
-
-
-
-
 
 
 // function wallPositionCalculator(x, y) {
