@@ -38,12 +38,17 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         onResizeContainer();
     });
 
-    let camera, controls, scene, renderer, raycaster, dragControls, transferControl, orbitControl;
+    let camera, controls, scene, renderer, raycaster, dragControls, transferControl;
     var mouse = {x: 0, y: 0};
     let FileContent = [];
     let currentSelectedObj = null;
+
+    // ToDo fix the outline!
+    // let outlineObj = null;
+
     // For selecting Obj
     let selectableObject = [];
+
     // All selectable Obj instead of walls
     let wallObjects = [];
     let doorObjects = [];
@@ -58,7 +63,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     let humanCellCordinate = [];
     // 0 for selectObj ; 1 for moveObj; 2 for rotateObj; 3 for scaleObj
     let selectMode = "0";
-    let selectObjDIV, panWordDIV, moveObjDIV, rotateObjDIV, scaleObjDIV;
+    let selectObjDIV, /*panWordDIV,*/ moveObjDIV, rotateObjDIV, scaleObjDIV;
     const geometry = new THREE.BoxBufferGeometry(10, 30, 5);
     const material = new THREE.MeshBasicMaterial({color: 0x032538});
 
@@ -103,13 +108,13 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         renderer.domElement.addEventListener('click', clickOnCanvas, false);
 
         selectObjDIV = document.getElementById('selectObj');
-        panWordDIV = document.getElementById('panWord');
+        // panWordDIV = document.getElementById('panWord');
         moveObjDIV = document.getElementById('moveObj');
         rotateObjDIV = document.getElementById('rotateObj');
         scaleObjDIV = document.getElementById('scaleObj');
 
         selectObjDIV.addEventListener("click", selectObj, false);
-        panWordDIV.addEventListener("click", panWord, false);
+        // panWordDIV.addEventListener("click", panWord, false);
         moveObjDIV.addEventListener("click", moveObj, false);
         rotateObjDIV.addEventListener("click", rotateObj, false);
         scaleObjDIV.addEventListener("click", scaleObj, false);
@@ -122,7 +127,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
         document.getElementById('optimizeCellView').addEventListener("click", optimizeCellView, false);
         document.getElementById('exportSceneToJSON').addEventListener("click", exportSceneToJSON, false);
-        document.getElementById('resetCamera').addEventListener("click", test, false);
+        document.getElementById('resetCamera').addEventListener("click", resetCamera, false);
         document.getElementById('3DInput').addEventListener('change', handle3DInput, false);
     }
 
@@ -412,8 +417,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     }
 
     function clickOnCanvas() {
+        // currentSelectedObj = null;
+        // transferControl.detach();
         event.preventDefault();
-        // renderer.setSize($(canvasContainer).width(), $(canvasContainer).height());
         mouse.x = (event.offsetX / $(canvasContainer).width()) * 2 - 1;
         mouse.y = -(event.offsetY / $(canvasContainer).height()) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
@@ -441,15 +447,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 }
                 currentSelectedObj = intersects[0].object;
             }
-
-            //     transferControl.attach( intersects[ 0 ].object );
-            //     // intersects[ 0 ].object.traverse( function ( child ) {
-            //     //     if ( child.material ) {
-            //     //         child.material = new THREE.MeshBasicMaterial({color: "#de362a"})
-            //     //     }
-            //     // } );
         }
-        // console.log(currentSelectedObj.name);
+        // addOutlineToSelectedOBJ();
     }
 
     function panWord() {
@@ -465,11 +464,10 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     function selectObj() {
         selectObjDIV.classList.add("--is-active");
-        panWordDIV.classList.remove("--is-active");
+        // panWordDIV.classList.remove("--is-active");
         moveObjDIV.classList.remove("--is-active");
         rotateObjDIV.classList.remove("--is-active");
         scaleObjDIV.classList.remove("--is-active");
-
 
         selectMode = 0;
         transferControl.detach();
@@ -480,7 +478,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         transferControl.showZ = true;
         transferControl.showY = true;
         selectObjDIV.classList.remove("--is-active");
-        panWordDIV.classList.remove("--is-active");
+        // panWordDIV.classList.remove("--is-active");
         moveObjDIV.classList.add("--is-active");
         rotateObjDIV.classList.remove("--is-active");
         scaleObjDIV.classList.remove("--is-active");
@@ -502,7 +500,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         transferControl.showZ = false;
 
         selectObjDIV.classList.remove("--is-active");
-        panWordDIV.classList.remove("--is-active");
+        // panWordDIV.classList.remove("--is-active");
         moveObjDIV.classList.remove("--is-active");
         rotateObjDIV.classList.add("--is-active");
         scaleObjDIV.classList.remove("--is-active");
@@ -523,7 +521,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         transferControl.showY = false;
 
         selectObjDIV.classList.remove("--is-active");
-        panWordDIV.classList.remove("--is-active");
+        // panWordDIV.classList.remove("--is-active");
         moveObjDIV.classList.remove("--is-active");
         rotateObjDIV.classList.remove("--is-active");
         scaleObjDIV.classList.add("--is-active");
@@ -808,13 +806,37 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 selectableObject.push(child);
             }
             else if(child.name.startsWith("P_human_")){
-                // humanObjects.push(child.children);
-                // selectableObject.push(child.children);
+                // console.log(child.children())
+                humanObjects.push(child.children[0]);
+                selectableObject.push(child.children[0]);
             }
         });
     }
-    function test(){
-        console.log(scene);
+
+    // ToDo Fix the outline !
+    function addOutlineToSelectedOBJ(){
+        if (currentSelectedObj != null && selectMode == 0){
+            let outlineMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.BackSide } );
+            outlineObj = new THREE.Mesh( currentSelectedObj.geometry, outlineMaterial );
+            outlineObj.position.x  = currentSelectedObj.position.x;
+            outlineObj.position.y  = currentSelectedObj.position.y;
+            outlineObj.position.z  = currentSelectedObj.position.z;
+            outlineObj.scale.multiplyScalar(1.1);
+            scene.add(outlineObj);
+        }
+        else{
+            removeOutlineObj();
+        }
+    }
+    function removeOutlineObj(){
+        if(outlineObj != null) {
+            scene.remove(outlineObj);
+        }
+    }
+
+    function resetCamera(){
+        controls.target.set(300, 0, 300);
+        camera.position.set(600, 300, 0);
     }
 
 })(jQuery);
