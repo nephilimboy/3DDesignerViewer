@@ -50,6 +50,12 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     let windowObjects = [];
     let ventObjects = [];
     let humanObjects = [];
+
+    let wallCellCordinate = [];
+    let doorCellCordinate = [];
+    let windowCellCordinate = [];
+    let ventCellCordinate = [];
+    let humanCellCordinate = [];
     // 0 for selectObj ; 1 for moveObj; 2 for rotateObj; 3 for scaleObj
     let selectMode = "0";
     let selectObjDIV, panWordDIV, moveObjDIV, rotateObjDIV, scaleObjDIV;
@@ -165,9 +171,17 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('addHuman').addEventListener("click", addHuman, false);
         document.getElementById('removeOBJ').addEventListener("click", removeOBJ, false);
         document.getElementById('updateCellView').addEventListener("click", updateCellView, false);
+        document.getElementById('optimizeCellView').addEventListener("click", optimizeCellView, false);
     }
 
     function updateCellView() {
+
+        // Reset the arrays
+        wallCellCordinate = [];
+        doorCellCordinate = [];
+        windowCellCordinate = [];
+        ventCellCordinate = [];
+        humanCellCordinate = [];
 
         let cells = document.querySelectorAll('[id^="#"]');
         cells.forEach(obj => {
@@ -218,26 +232,84 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             dots.forEach(obj => {
                 let x = Math.floor(obj.x);
                 let z = Math.floor(obj.y);
+                wallCellCordinate.push({x:x, y:z});
                 document.getElementById('#' + x + '_' + z).style.fill = "#000000";
             })
         });
 
         // Update cell doors
         doorObjects.forEach(obj =>{
+            doorCellCordinate.push({x:Math.floor(obj.position.x / 10), y:Math.floor(obj.position.z / 10)});
             document.getElementById('#' + Math.floor(obj.position.x / 10) + '_' + Math.floor(obj.position.z / 10)).style.fill = "#00ff0c";
         });
         // Update cell windows
         windowObjects.forEach(obj =>{
+            windowCellCordinate.push({x:Math.floor(obj.position.x / 10), y:Math.floor(obj.position.z / 10)});
             document.getElementById('#' + Math.floor(obj.position.x / 10) + '_' + Math.floor(obj.position.z / 10)).style.fill = "#0064ff";
         });
         // Update cell vents
         ventObjects.forEach(obj =>{
+            ventCellCordinate.push({x:Math.floor(obj.position.x / 10), y:Math.floor(obj.position.z / 10)});
             document.getElementById('#' + Math.floor(obj.position.x / 10) + '_' + Math.floor(obj.position.z / 10)).style.fill = "#ffe812";
         });
         // Update cell vents
         humanObjects.forEach(obj =>{
+            humanCellCordinate.push({x:Math.floor(obj.position.x / 10), y:Math.floor(obj.position.z / 10)});
             document.getElementById('#' + Math.floor(obj.position.x / 10) + '_' + Math.floor(obj.position.z / 10)).style.fill = "#e23fff";
         });
+    }
+
+    function optimizeCellView(){
+        let cells = document.querySelectorAll('[id^="#"]');
+        cells.forEach(obj => {
+            obj.style.fill = "#ffffff";
+        });
+        let temp = [];
+        let minX = null;
+        let minY = null;
+        let allCordinate = temp.concat(wallCellCordinate, doorCellCordinate, windowCellCordinate, ventCellCordinate, humanCellCordinate);
+        allCordinate.forEach(cord=>{
+            if(minX == null){
+                minX = cord.x;
+            }
+            else{
+                if(minX >= cord.x){
+                    minX = cord.x;
+                }
+            }
+            if(minY == null){
+                minY = cord.y;
+            }
+            else{
+                if(minY >= cord.y){
+                    minY = cord.y;
+                }
+            }
+        });
+
+        if(minX != null && minY != null){
+
+            wallCellCordinate.forEach(cord=>{
+                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#000000";
+            });
+            doorCellCordinate.forEach(cord=>{
+                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#00ff0c";
+            });
+            windowCellCordinate.forEach(cord=>{
+                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#0064ff";
+            });
+            ventCellCordinate.forEach(cord=>{
+                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#ffe812";
+            });
+            humanCellCordinate.forEach(cord=>{
+                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#e23fff";
+            });
+
+        }
+        else{
+            console.log("Somethings wrong with coordinates")
+        }
+
     }
 
     // ToDo change grid size based on the user's input
@@ -297,7 +369,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             })
             .style("fill", "#e6e6e6")
             .style("stroke", "#222");
-
 
         function zoomed({transform}) {
             g.attr("transform", transform);
