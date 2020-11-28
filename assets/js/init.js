@@ -180,7 +180,12 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         gridHelper.position.z = 300;
         gridHelper.name = "gridHelper";
         scene.add(gridHelper);
+
+        var axesHelper = new THREE.AxesHelper( 100 );
+        axesHelper.name = "axesHelper";
+        scene.add( axesHelper );
     }
+
 
     function updateCellView() {
         // Reset the arrays
@@ -374,6 +379,43 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             })
             .style("fill", "#e6e6e6")
             .style("stroke", "#222");
+
+
+
+        g.append("svg:defs").append("svg:marker")
+            .attr("id", "triangle")
+            .attr("refX", 6)
+            .attr("refY", 6)
+            .attr("markerWidth", 30)
+            .attr("markerHeight", 30)
+            .attr("markerUnits","userSpaceOnUse")
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M 0 0 12 6 0 12 3 6")
+            .style("fill", "green");
+
+
+        g.append("g")
+            .append("line")
+            .style("stroke", "red")
+            .style("stroke-width", 5)
+            .attr("x1", -7)
+            .attr("y1", -6)
+            .attr("x2", 100)
+            .attr("y2", -6)
+            .attr("marker-end", "url(#triangle)");
+
+        g.append("g")
+            .append("line")
+            .style("stroke", "blue")
+            .style("stroke-width", 5)
+            .attr("x1", -7)
+            .attr("y1", -8.5)
+            .attr("x2", -7)
+            .attr("y2", 100)
+            .attr("marker-end", "url(#triangle)");
+
+
 
         function zoomed({transform}) {
             g.attr("transform", transform);
@@ -740,6 +782,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         scene.remove(controls);
         scene.remove(scene.getObjectByName("transferControl"));
         scene.remove(scene.getObjectByName("gridHelper"));
+        scene.remove(scene.getObjectByName("axesHelper"));
         var result=scene.toJSON();
         var output =JSON.stringify(result);
         addGridHelperAndTransferControl();
@@ -767,6 +810,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                         // }
                         scene.remove(scene.getObjectByName("transferControl"));
                         scene.remove(scene.getObjectByName("gridHelper"));
+                        scene.remove(scene.getObjectByName("axesHelper"));
                         scene = json;
                         addGridHelperAndTransferControl();
                         extractObjectFromSceneToArrays();
