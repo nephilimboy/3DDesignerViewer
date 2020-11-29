@@ -1112,9 +1112,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 allCellArray.push(cell)
             }
         });
-        finalJason.cells = allCellArray;
         let temp = {};
         temp.scenario = finalJason;
+        temp.cells = allCellArray;
 
         // Downloading the file
         var a = document.createElement("a");
