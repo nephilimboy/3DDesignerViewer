@@ -183,12 +183,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     var editor = new JSONEditor(document.getElementById("editor_holder"),{
         theme: 'bootstrap3',
         schema: schema,
-        //schema: {
-        //    type: "object",
-        //    properties: {
-        //        name: { "type": "string" }
-        //    }
-        //}
     });
     editor.setValue(value);
 
