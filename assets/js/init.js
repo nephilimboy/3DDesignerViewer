@@ -1035,14 +1035,19 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     function saveJson(){
         let finalJason = editor.getValue();
         // getting the data from cell view
-        finalJason.shape = "[" + CellCordinateMaxX + ","+ CellCordinateMaxY + "]";
+        finalJason.shape = [];
+        finalJason.shape.push(CellCordinateMaxX);
+        finalJason.shape.push(CellCordinateMaxY);
         let allCellArray= [];
         let cells = document.querySelectorAll('[id^="#"]');
         cells.forEach(obj => {
             // walls ID= #14_33
             if(obj.style.fill == "rgb(0, 0, 0)"){
+                let temp = [];
+                temp.push( parseInt(((((obj.id).split("#"))[1]).split("_"))[0]));
+                temp.push( parseInt( ((((obj.id).split("#"))[1]).split("_"))[1]));
                 let cell = {
-                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "cell_id": temp ,
                     "state": {
                         "concentration": 0,
                         "type": -300,
@@ -1052,8 +1057,11 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             }
             // doors
             else if(obj.style.fill == "rgb(0, 255, 12)"){
+                let temp = [];
+                temp.push( parseInt(((((obj.id).split("#"))[1]).split("_"))[0]));
+                temp.push( parseInt( ((((obj.id).split("#"))[1]).split("_"))[1]));
                 let cell = {
-                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "cell_id": temp ,
                     "state": {
                         "concentration": 400,
                         "type": -400,
@@ -1063,8 +1071,11 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             }
             // window
             else if(obj.style.fill == "rgb(0, 100, 255)"){
+                let temp = [];
+                temp.push( parseInt(((((obj.id).split("#"))[1]).split("_"))[0]));
+                temp.push( parseInt( ((((obj.id).split("#"))[1]).split("_"))[1]));
                 let cell = {
-                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "cell_id": temp ,
                     "state": {
                         "concentration": 400,
                         "type": -500,
@@ -1074,8 +1085,11 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             }
             // vents
             else if(obj.style.fill == "rgb(255, 232, 18)"){
+                let temp = [];
+                temp.push( parseInt(((((obj.id).split("#"))[1]).split("_"))[0]));
+                temp.push( parseInt( ((((obj.id).split("#"))[1]).split("_"))[1]));
                 let cell = {
-                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "cell_id": temp ,
                     "state": {
                         "concentration": 300,
                         "type": -600,
@@ -1085,8 +1099,11 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             }
             // human
             else if(obj.style.fill == "rgb(226, 63, 255)"){
+                let temp = [];
+                temp.push( parseInt(((((obj.id).split("#"))[1]).split("_"))[0]));
+                temp.push( parseInt( ((((obj.id).split("#"))[1]).split("_"))[1]));
                 let cell = {
-                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "cell_id": temp ,
                     "state": {
                         "concentration": 500,
                         "type": -200,
