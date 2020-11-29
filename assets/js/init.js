@@ -23,7 +23,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     const doorTextureAddress = "../textures/door.jpg";
     const windowTextureAddress = "../textures/window.png";
     const ventTextureAddress = "../textures/vent.jpg";
-    const humanObjAddress = "../obj/human.obj";
+    const humanObjAddress = "https://github.com/nephilimboy/3DDesignerViewer/raw/main/assets/obj/human.obj";
 
     var fileInput = document.getElementById('fileInput');
     var canvasContainer = document.getElementById('canvasContainer');
