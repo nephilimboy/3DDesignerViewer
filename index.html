@@ -6,10 +6,11 @@
     <title>Amir Web viewer</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="assets/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
     <link href="assets/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@2.2.0/dist/gridstack.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
     <style type="text/css">
         .grid-stack {
@@ -29,32 +30,14 @@
 
 <div class="grid-stack">
 
-    <div class="grid-stack-item" data-gs-x="0" data-gs-y="0" data-gs-width="12" data-gs-height="1" data-gs-no-move="yes" data-gs-no-resize="yes">
-        <div class="grid-stack-item-content" style="overflow: hidden !important;">
+    <!--<div class="grid-stack-item" data-gs-x="0" data-gs-y="10" data-gs-width="12" data-gs-height="1" data-gs-no-move="yes" data-gs-no-resize="yes">-->
+        <!--<div class="grid-stack-item-content" style="overflow: hidden !important;">-->
+            <!--ffkfkfk-->
 
+        <!--</div>-->
+    <!--</div>-->
 
-
-            <div class="icon-bar1">
-                <!--<a class="active1" href="#"><i class="fa fa-home"></i></a>-->
-                <a href="#" id="exportSceneToJSON"><img src="assets/img/icons/save.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Save 3D View</span></a>
-
-                <a href="#" id="importScene" onclick="document.getElementById('3DInput').click()" ><img src="assets/img/icons/load.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Load 3D View</span></a>
-                <input hidden id="3DInput"  type="file" name="file" />
-
-                <a href="#"><img src="assets/img/icons/save.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Download JSON</span></a>
-                <a href="#" id="optimizeCellView"><img src="assets/img/icons/optimize.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Optimize Cell View</span></a>
-                <a href="#" id="updateCellView"><img src="assets/img/icons/update.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Update Cell View</span></a>
-                <a href="#" id="resetCamera"><img src="assets/img/icons/camera.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Reset 3D Camera</span></a>
-                <a href="#" id="addHuman" ><img src="assets/img/icons/human.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Add Human</span></a>
-            </div>
-
-
-
-
-        </div>
-    </div>
-
-    <div  class="grid-stack-item" data-gs-no-move="yes" data-gs-x="0" data-gs-y="2" data-gs-width="8" data-gs-height="8">
+    <div  class="grid-stack-item" data-gs-no-move="yes" data-gs-x="0" data-gs-y="2" data-gs-width="8" data-gs-height="9">
         <div id="canvasContainer" class="grid-stack-item-content">
             <div class="options" style="margin-top: 10%">
                 <div class="option --is-active" data-option="legs" id="selectObj">
@@ -101,16 +84,59 @@
         </div>
     </div>
 
-    <div id="d3Container" class="grid-stack-item" data-gs-x="9" data-gs-y="2" data-gs-width="4" data-gs-height="8">
+    <div id="d3Container" class="grid-stack-item" data-gs-x="9" data-gs-y="2" data-gs-width="4" data-gs-height="9">
         <div class="grid-stack-item-content" style="background-color:#cccccc">
             <div id="cellView"></div>
+        </div>
+    </div>
+
+    <div id="" class="grid-stack-item" data-gs-x="0" data-gs-y="0" data-gs-width="12" data-gs-height="1">
+        <div class="grid-stack-item-content" style="overflow: hidden !important;">
+            <div class="icon-bar1">
+                <a href="#" id="exportSceneToJSON"><img src="assets/img/icons/save.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Save 3D View</span></a>
+                <a href="#" id="importScene" onclick="document.getElementById('3DInput').click()" ><img src="assets/img/icons/load.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Load 3D View</span></a>
+                <input  id="3DInput"  type="file" name="file" style="display: none" />
+                <a href="#" data-toggle="modal" data-target="#myModal"><img src="assets/img/icons/save.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Download JSON</span></a>
+                <a href="#" id="optimizeCellView"><img src="assets/img/icons/optimize.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Optimize Cell View</span></a>
+                <a href="#" id="updateCellView"><img src="assets/img/icons/update.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Update Cell View</span></a>
+                <a href="#" id="resetCamera"><img src="assets/img/icons/camera.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Reset 3D Camera</span></a>
+                <a href="#" id="addHuman" ><img src="assets/img/icons/human.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Add Human</span></a>
+            </div>
+
         </div>
     </div>
 </div>
 
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Save JSON file</h4>
+            </div>
+            <div class="modal-body">
+                <div id='editor_holder' style="width: 100%"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Save</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="assets/js/materialize.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gridstack@2.2.0/dist/gridstack.all.js"></script>
 <script src="https://d3js.org/d3.v6.js"></script>
 
@@ -119,6 +145,8 @@
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script src="https://rawgit.com/Wilt/ThreeCSG/develop/ThreeCSG.js"></script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
 
 
 <script type="module" src="assets/js/init.js"></script>

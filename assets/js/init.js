@@ -7,10 +7,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
 (function ($) {
     "use strict";
-    $(function () {
-        // $('.sidenav').sidenav();
-    });
-
     $(window).on('load', function () {
         init();
         createCellViewer();
@@ -27,9 +23,10 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         },
         disableOneColumnMode: true,
         float: false,
+        compact: true,
         animate: true,
         always_show_resize_handle: true,
-        cellHeight: 100,
+        cellHeight: 95,
         verticalMargin: 5,
         horizontalMargin: 5,
     };
@@ -66,6 +63,145 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     let selectObjDIV, /*panWordDIV,*/ moveObjDIV, rotateObjDIV, scaleObjDIV;
     const geometry = new THREE.BoxBufferGeometry(10, 30, 5);
     const material = new THREE.MeshBasicMaterial({color: 0x032538});
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    JSONEditor.defaults.options.theme = 'bootstrap3';
+    var schema = {
+        "title": "Scenario",
+        "type": "object",
+        "propertyOrder": 1,
+        "properties": {
+            "shape": {
+                "type": "string",
+                "propertyOrder": 1,
+                "default": "[50, 50]"
+            },
+            "wrapped": {
+                "type": "string",
+                "propertyOrder": 2,
+                "enum": [
+                    "true",
+                    "false"
+                ]
+            },
+            "default_delay": {
+                "type": "string",
+                "propertyOrder": 3,
+                "enum": [
+                    "transport",
+                    "inertial",
+                    "hybrid"
+                ]
+            },
+            "default_cell_type": {
+                "propertyOrder": 4,
+                "type": "string"
+            },
+            "default_state": {
+                "propertyOrder": 5,
+                "type": "object",
+                "title": "default_state",
+                "properties": {
+                    "counter": {
+                        "type": "integer",
+                    },
+                    "concentration": {
+                        "type": "integer",
+                    },
+                    "type": {
+                        "type": "integer",
+                    },
+                }
+            },
+            "default_config": {
+                "propertyOrder": 6,
+                "type": "object",
+                "title": "default_config",
+            },
+            "neighborhood": {
+                "propertyOrder": 7,
+                "type": "array",
+                "format": "table",
+                "title": "neighborhood",
+                "uniqueItems": true,
+
+                "items": {
+                    "type": "object",
+                    "title": "neighborhood",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                        },
+                        "range": {
+                            "type": "integer"
+                        }
+                    }
+                },
+            },
+
+        }
+    };
+
+    var value = {
+
+
+        "shape": [
+            43,
+            40
+        ],
+        "wrapped": false,
+        "default_delay": "transport",
+        "default_cell_type": "CO2_cell",
+        "default_state": {
+            "counter": -1,
+            "concentration": 500,
+            "type": -100
+        },
+        "default_config": {
+            "CO2_cell": {
+                "conc_increase": 143.2,
+                "base": 500,
+                "resp_time": 1,
+                "window_conc": 400,
+                "vent_conc": 300
+            }
+        },
+        "neighborhood": [
+            {
+                "type": "von_neumann",
+                "range": 1
+            }
+        ]
+
+    };
+    var editor = new JSONEditor(document.getElementById("editor_holder"),{
+        theme: 'bootstrap3',
+        schema: schema,
+        //schema: {
+        //    type: "object",
+        //    properties: {
+        //        name: { "type": "string" }
+        //    }
+        //}
+    });
+    editor.setValue(value);
+
+    console.log(editor.getValue());
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
     function init() {
