@@ -20,10 +20,10 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     // const humanObjAddress = "http://localhost:63342/WebModelViewer3D/assets/obj/human.obj";
 
     // On Server
-    const doorTextureAddress = "../textures/door.jpg";
-    const windowTextureAddress = "../textures/window.png";
-    const ventTextureAddress = "../textures/vent.jpg";
-    const humanObjAddress = "https://github.com/nephilimboy/3DDesignerViewer/raw/main/assets/obj/human.obj";
+    const doorTextureAddress = "https://nephilimboy.github.io/3DDesignerViewer/assets/textures/door.jpg";
+    const windowTextureAddress = "https://nephilimboy.github.io/3DDesignerViewer/assets/textures/window.png";
+    const ventTextureAddress = "https://nephilimboy.github.io/3DDesignerViewer/assets/textures/vent.jpg";
+    const humanObjAddress = "https://nephilimboy.github.io/3DDesignerViewer/assets/obj/human.obj";
 
     var fileInput = document.getElementById('fileInput');
     var canvasContainer = document.getElementById('canvasContainer');
