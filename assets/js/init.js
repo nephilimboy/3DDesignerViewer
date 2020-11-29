@@ -95,12 +95,10 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 "default": "[50, 50]"
             },
             "wrapped": {
-                "type": "string",
+                "type": "boolean",
+                "format": "checkbox",
+                "default": false,
                 "propertyOrder": 2,
-                "enum": [
-                    "true",
-                    "false"
-                ]
             },
             "default_delay": {
                 "type": "string",
@@ -1098,10 +1096,12 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             }
         });
         finalJason.cells = allCellArray;
+        let temp = {};
+        temp.scenario = finalJason;
 
         // Downloading the file
         var a = document.createElement("a");
-        var file = new Blob([JSON.stringify(finalJason)], {type: 'application/json'});
+        var file = new Blob([JSON.stringify(temp)], {type: 'application/json'});
         a.href = URL.createObjectURL(file);
         a.download = 'config.json';
         a.click();
