@@ -13,6 +13,18 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         animate();
     });
 
+    //Local test without using web server or Nodejs server
+    // const doorTextureAddress = "http://localhost:63342/WebModelViewer3D/assets/textures/door.jpg";
+    // const windowTextureAddress = "http://localhost:63342/WebModelViewer3D/assets/textures/window.png";
+    // const ventTextureAddress = "http://localhost:63342/WebModelViewer3D/assets/textures/vent.jpg";
+    // const humanObjAddress = "http://localhost:63342/WebModelViewer3D/assets/obj/human.obj";
+
+    // On Server
+    const doorTextureAddress = "../textures/door.jpg";
+    const windowTextureAddress = "../textures/window.png";
+    const ventTextureAddress = "../textures/vent.jpg";
+    const humanObjAddress = "../obj/human.obj";
+
     var fileInput = document.getElementById('fileInput');
     var canvasContainer = document.getElementById('canvasContainer');
     var d3Container = document.getElementById('d3Container');
@@ -69,13 +81,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     const geometry = new THREE.BoxBufferGeometry(10, 30, 5);
     const material = new THREE.MeshBasicMaterial({color: 0x032538});
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    // JSON editor config
+    let editor = null;
     JSONEditor.defaults.options.theme = 'bootstrap3';
     var schema = {
         "title": "Scenario",
@@ -152,53 +159,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         }
     };
 
-    var value = {
-
-
-        "shape": [
-            43,
-            40
-        ],
-        "wrapped": false,
-        "default_delay": "transport",
-        "default_cell_type": "CO2_cell",
-        "default_state": {
-            "counter": -1,
-            "concentration": 500,
-            "type": -100
-        },
-        "default_config": {
-            "CO2_cell": {
-                "conc_increase": 143.2,
-                "base": 500,
-                "resp_time": 1,
-                "window_conc": 400,
-                "vent_conc": 300
-            }
-        },
-        "neighborhood": [
-            {
-                "type": "von_neumann",
-                "range": 1
-            }
-        ]
-
-    };
-    var editor = new JSONEditor(document.getElementById("editor_holder"),{
-        theme: 'bootstrap3',
-        schema: schema,
-    });
-    editor.setValue(value);
-
-    console.log(editor.getValue());
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
     function init() {
@@ -241,13 +201,11 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         renderer.domElement.addEventListener('click', clickOnCanvas, false);
 
         selectObjDIV = document.getElementById('selectObj');
-        // panWordDIV = document.getElementById('panWord');
         moveObjDIV = document.getElementById('moveObj');
         rotateObjDIV = document.getElementById('rotateObj');
         scaleObjDIV = document.getElementById('scaleObj');
 
         selectObjDIV.addEventListener("click", selectObj, false);
-        // panWordDIV.addEventListener("click", panWord, false);
         moveObjDIV.addEventListener("click", moveObj, false);
         rotateObjDIV.addEventListener("click", rotateObj, false);
         scaleObjDIV.addEventListener("click", scaleObj, false);
@@ -261,7 +219,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('optimizeCellView').addEventListener("click", optimizeCellView, false);
         document.getElementById('exportSceneToJSON').addEventListener("click", exportSceneToJSON, false);
         document.getElementById('resetCamera').addEventListener("click", resetCamera, false);
-        document.getElementById('downloadJSON').addEventListener("click", downloadJSON, false);
+        document.getElementById('downloadJSON').addEventListener("click", opneJsonEditorModal, false);
+        document.getElementById('saveJson').addEventListener("click", saveJson, false);
         document.getElementById('3DInput').addEventListener('change', handle3DInput, false);
     }
 
@@ -451,12 +410,9 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                     CellCordinateMaxY = cord.y;
                 }
             }
-
-
         });
 
         if(CellCordinateMinX != null && CellCordinateMinY != null){
-
             wallCellCordinate.forEach(cord=>{
                 document.getElementById('#' + (cord.x-CellCordinateMinX) + '_' + (cord.y-CellCordinateMinY)).style.fill = "#000000";
             });
@@ -744,7 +700,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     }
 
     function addDoor() {
-        let texture = new THREE.TextureLoader().load('http://localhost:63342/WebModelViewer3D/assets/textures/door.jpg');
+        let texture = new THREE.TextureLoader().load(doorTextureAddress);
         let doorGeometry = new THREE.BoxBufferGeometry(9, 20, 6);
         let doormaterial = new THREE.MeshBasicMaterial({map: texture});
         let door = new THREE.Mesh(doorGeometry, doormaterial);
@@ -759,7 +715,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     function addWindow() {
         let windowGeometry = new THREE.BoxBufferGeometry(9, 10, 6);
-        let texture = new THREE.TextureLoader().load('http://localhost:63342/WebModelViewer3D/assets/textures/window.png');
+        let texture = new THREE.TextureLoader().load(windowTextureAddress);
         let materialWindow = new THREE.MeshBasicMaterial({map: texture});
         let window = new THREE.Mesh(windowGeometry, materialWindow);
         window.position.y = 20;
@@ -777,7 +733,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         const radius = 4;
         const height = 15;
         const radialSegments = 6;
-        let texture = new THREE.TextureLoader().load('http://localhost:63342/WebModelViewer3D/assets/textures/vent.jpg');
+        let texture = new THREE.TextureLoader().load(ventTextureAddress);
         let materialVent = new THREE.MeshBasicMaterial({map: texture});
         const geometry = new THREE.ConeBufferGeometry(radius, height, radialSegments);
         let vent = new THREE.Mesh(geometry, materialVent);
@@ -793,7 +749,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
     function addHuman() {
         let loader = new OBJLoader();
-        loader.load('http://localhost:63342/WebModelViewer3D/assets/obj/human.obj',
+        loader.load(humanObjAddress,
             function (object) {
                 object.traverse(function (child) {
                     if (child.material) {
@@ -1039,8 +995,116 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         camera.position.set(600, 300, 0);
     }
 
-    function downloadJSON(){
-        console.log("jdjdjd")
+    function opneJsonEditorModal(){
+        var value = {
+            "shape": [
+                43,
+                40
+            ],
+            "wrapped": false,
+            "default_delay": "transport",
+            "default_cell_type": "CO2_cell",
+            "default_state": {
+                "counter": -1,
+                "concentration": 500,
+                "type": -100
+            },
+            "default_config": {
+                "CO2_cell": {
+                    "conc_increase": 143.2,
+                    "base": 500,
+                    "resp_time": 1,
+                    "window_conc": 400,
+                    "vent_conc": 300
+                }
+            },
+            "neighborhood": [
+                {
+                    "type": "von_neumann",
+                    "range": 1
+                }
+            ]
+
+        };
+        editor = new JSONEditor(document.getElementById("editor_holder"),{
+            theme: 'bootstrap3',
+            schema: schema,
+        });
+        editor.setValue(value);
         $("#myModal").modal("show");
     }
+
+    function saveJson(){
+        let finalJason = editor.getValue();
+        // getting the data from cell view
+        finalJason.shape = "[" + CellCordinateMaxX + ","+ CellCordinateMaxY + "]";
+        let allCellArray= [];
+        let cells = document.querySelectorAll('[id^="#"]');
+        cells.forEach(obj => {
+            // walls ID= #14_33
+            if(obj.style.fill == "rgb(0, 0, 0)"){
+                let cell = {
+                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "state": {
+                        "concentration": 0,
+                        "type": -300,
+                        "counter": -1
+                    }};
+                allCellArray.push(cell)
+            }
+            // doors
+            else if(obj.style.fill == "rgb(0, 255, 12)"){
+                let cell = {
+                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "state": {
+                        "concentration": 400,
+                        "type": -400,
+                        "counter": -1
+                    }};
+                allCellArray.push(cell)
+            }
+            // window
+            else if(obj.style.fill == "rgb(0, 100, 255)"){
+                let cell = {
+                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "state": {
+                        "concentration": 400,
+                        "type": -500,
+                        "counter": -1
+                    }};
+                allCellArray.push(cell)
+            }
+            // vents
+            else if(obj.style.fill == "rgb(255, 232, 18)"){
+                let cell = {
+                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "state": {
+                        "concentration": 300,
+                        "type": -600,
+                        "counter": -1
+                    }};
+                allCellArray.push(cell)
+            }
+            // human
+            else if(obj.style.fill == "rgb(226, 63, 255)"){
+                let cell = {
+                    "cell_id": "[" + ((((obj.id).split("#"))[1]).split("_"))[0] + ","+ ((((obj.id).split("#"))[1]).split("_"))[1] + "]",
+                    "state": {
+                        "concentration": 500,
+                        "type": -200,
+                        "counter": -1
+                    }};
+                allCellArray.push(cell)
+            }
+        });
+        finalJason.cells = allCellArray;
+
+        // Downloading the file
+        var a = document.createElement("a");
+        var file = new Blob([finalJason], {type: 'application/json'});
+        a.href = URL.createObjectURL(file);
+        a.download = 'config.json';
+        a.click();
+    }
+
 })(jQuery);
