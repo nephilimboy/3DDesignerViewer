@@ -1101,10 +1101,11 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
 
         // Downloading the file
         var a = document.createElement("a");
-        var file = new Blob([finalJason], {type: 'application/json'});
+        var file = new Blob([JSON.stringify(finalJason)], {type: 'application/json'});
         a.href = URL.createObjectURL(file);
         a.download = 'config.json';
         a.click();
+        a.remove();
     }
 
 })(jQuery);
