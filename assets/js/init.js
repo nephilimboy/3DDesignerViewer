@@ -58,6 +58,11 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     let windowCellCordinate = [];
     let ventCellCordinate = [];
     let humanCellCordinate = [];
+
+    let CellCordinateMinX = null;
+    let CellCordinateMinY = null;
+    let CellCordinateMaxX = null;
+    let CellCordinateMaxY = null;
     // 0 for selectObj ; 1 for moveObj; 2 for rotateObj; 3 for scaleObj
     let selectMode = "0";
     let selectObjDIV, /*panWordDIV,*/ moveObjDIV, rotateObjDIV, scaleObjDIV;
@@ -130,7 +135,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
                 "format": "table",
                 "title": "neighborhood",
                 "uniqueItems": true,
-
                 "items": {
                     "type": "object",
                     "title": "neighborhood",
@@ -187,7 +191,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
     editor.setValue(value);
 
     console.log(editor.getValue());
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,6 +261,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         document.getElementById('optimizeCellView').addEventListener("click", optimizeCellView, false);
         document.getElementById('exportSceneToJSON').addEventListener("click", exportSceneToJSON, false);
         document.getElementById('resetCamera').addEventListener("click", resetCamera, false);
+        document.getElementById('downloadJSON').addEventListener("click", downloadJSON, false);
         document.getElementById('3DInput').addEventListener('change', handle3DInput, false);
     }
 
@@ -315,7 +319,6 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         axesHelper.name = "axesHelper";
         scene.add( axesHelper );
     }
-
 
     function updateCellView() {
         // Reset the arrays
@@ -407,44 +410,67 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
             obj.style.fill = "#ffffff";
         });
         let temp = [];
-        let minX = null;
-        let minY = null;
+
+        CellCordinateMinX = null;
+        CellCordinateMinY = null;
+        CellCordinateMaxX = null;
+        CellCordinateMaxY = null;
+
+
         let allCordinate = temp.concat(wallCellCordinate, doorCellCordinate, windowCellCordinate, ventCellCordinate, humanCellCordinate);
         allCordinate.forEach(cord=>{
-            if(minX == null){
-                minX = cord.x;
+            if(CellCordinateMinX == null){
+                CellCordinateMinX = cord.x;
             }
             else{
-                if(minX >= cord.x){
-                    minX = cord.x;
+                if(CellCordinateMinX >= cord.x){
+                    CellCordinateMinX = cord.x;
                 }
             }
-            if(minY == null){
-                minY = cord.y;
+            if(CellCordinateMinY == null){
+                CellCordinateMinY = cord.y;
             }
             else{
-                if(minY >= cord.y){
-                    minY = cord.y;
+                if(CellCordinateMinY >= cord.y){
+                    CellCordinateMinY = cord.y;
                 }
             }
+            if(CellCordinateMaxX == null){
+                CellCordinateMaxX = cord.x;
+            }
+            else{
+                if(CellCordinateMaxX <= cord.x){
+                    CellCordinateMaxX = cord.x;
+                }
+            }
+            if(CellCordinateMaxY == null){
+                CellCordinateMaxY = cord.y;
+            }
+            else{
+                if(CellCordinateMaxY <= cord.y){
+                    CellCordinateMaxY = cord.y;
+                }
+            }
+
+
         });
 
-        if(minX != null && minY != null){
+        if(CellCordinateMinX != null && CellCordinateMinY != null){
 
             wallCellCordinate.forEach(cord=>{
-                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#000000";
+                document.getElementById('#' + (cord.x-CellCordinateMinX) + '_' + (cord.y-CellCordinateMinY)).style.fill = "#000000";
             });
             doorCellCordinate.forEach(cord=>{
-                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#00ff0c";
+                document.getElementById('#' + (cord.x-CellCordinateMinX) + '_' + (cord.y-CellCordinateMinY)).style.fill = "#00ff0c";
             });
             windowCellCordinate.forEach(cord=>{
-                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#0064ff";
+                document.getElementById('#' + (cord.x-CellCordinateMinX) + '_' + (cord.y-CellCordinateMinY)).style.fill = "#0064ff";
             });
             ventCellCordinate.forEach(cord=>{
-                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#ffe812";
+                document.getElementById('#' + (cord.x-CellCordinateMinX) + '_' + (cord.y-CellCordinateMinY)).style.fill = "#ffe812";
             });
             humanCellCordinate.forEach(cord=>{
-                document.getElementById('#' + (cord.x-minX) + '_' + (cord.y-minY)).style.fill = "#e23fff";
+                document.getElementById('#' + (cord.x-CellCordinateMinX) + '_' + (cord.y-CellCordinateMinY)).style.fill = "#e23fff";
             });
         }
         else{
@@ -1013,4 +1039,8 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         camera.position.set(600, 300, 0);
     }
 
+    function downloadJSON(){
+        console.log("jdjdjd")
+        $("#myModal").modal("show");
+    }
 })(jQuery);

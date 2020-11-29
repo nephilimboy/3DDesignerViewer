@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <title>Amir Web viewer</title>
+    <title>Amir 3D Designer</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -95,7 +95,7 @@
                 <a href="#" id="exportSceneToJSON"><img src="assets/img/icons/save.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Save 3D View</span></a>
                 <a href="#" id="importScene" onclick="document.getElementById('3DInput').click()" ><img src="assets/img/icons/load.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Load 3D View</span></a>
                 <input  id="3DInput"  type="file" name="file" style="display: none" />
-                <a href="#" data-toggle="modal" data-target="#myModal"><img src="assets/img/icons/save.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Download JSON</span></a>
+                <a href="#" id="downloadJSON"><img src="assets/img/icons/save.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Download JSON</span></a>
                 <a href="#" id="optimizeCellView"><img src="assets/img/icons/optimize.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Optimize Cell View</span></a>
                 <a href="#" id="updateCellView"><img src="assets/img/icons/update.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Update Cell View</span></a>
                 <a href="#" id="resetCamera"><img src="assets/img/icons/camera.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Reset 3D Camera</span></a>
@@ -136,23 +136,15 @@
 
 
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gridstack@2.2.0/dist/gridstack.all.js"></script>
 <script src="https://d3js.org/d3.v6.js"></script>
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script src="https://rawgit.com/Wilt/ThreeCSG/develop/ThreeCSG.js"></script>
-
-
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
 
-
 <script type="module" src="assets/js/init.js"></script>
-
-
-
 
 </body>
 </html>
