@@ -228,7 +228,7 @@ import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.
         transferControl.setRotationSnap(Math.PI / 12);
         // transferControl.showY = false;
         transferControl.setMode("scale");
-        transferControl.setScaleSnap(1);
+        transferControl.setScaleSnap(0.5);
 
         transferControl.addEventListener('change', render);
         transferControl.addEventListener('dragging-changed', function (event) {
