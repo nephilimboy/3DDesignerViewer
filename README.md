@@ -1,5 +1,5 @@
 # 3DDesignerViewer
-A 3D designer for creating a scenario JSON config file for Cadmium Cell-DEVS simulation tools.
+A 3D designer for creating a scenario JSON config file for CO2 model in Cadmium Cell-DEVS simulation tools.
 This is the beta version of this web application. Visualizing the simulation result in 3D space will be available in the
 final version. 
 - Live version's link
@@ -7,6 +7,10 @@ final version.
 - Tutorial 
     - https://youtu.be/25nFQcOXNxU
    
+## Bug Report
+This is the beta version so please let me know if you find any bugs.
+- Post an Issue
+- Send me an email "he.amirhossein@gmail.com"
 ## Used Libraries
 - Threejs (web OpenGL framework)
     - https://threejs.org/
