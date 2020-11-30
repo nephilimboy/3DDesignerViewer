@@ -13,7 +13,7 @@ This is the beta version so please let me know if you find any bugs.
 - Send me an email "he.amirhossein.ps4@gmail.com"
 
 ## Beta Version Limitation
-- No simulation visualization
+- No simulation result visualization
 - No resizable workspace grid (the grid size is limited to 60*60 cells)
 
 ## Used Libraries
