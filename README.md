@@ -9,7 +9,7 @@ final version.
    
 ## Bug Report
 This is the beta version so please let me know if you find any bugs.
-- Post an Issue
+- Post an issue here 
 - Send me an email "he.amirhossein.ps4@gmail.com"
 
 ## Beta Version Limitation
