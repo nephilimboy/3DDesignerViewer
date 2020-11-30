@@ -11,6 +11,11 @@ final version.
 This is the beta version so please let me know if you find any bugs.
 - Post an Issue
 - Send me an email "he.amirhossein.ps4@gmail.com"
+
+## Beta Version Limitation
+- No simulation visualization
+- No resizable workspace grid (the grid size is limited to 60*60 cells)
+
 ## Used Libraries
 - Threejs (web OpenGL framework)
     - https://threejs.org/
