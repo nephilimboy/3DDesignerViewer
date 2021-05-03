@@ -28,11 +28,20 @@
 <body style="background-color: #696969 !important; width: 100% !important;">
 
 
+
+
+
+
+
+
+
+
 <div class="grid-stack">
 
     <!--<div class="grid-stack-item" data-gs-x="0" data-gs-y="10" data-gs-width="12" data-gs-height="1" data-gs-no-move="yes" data-gs-no-resize="yes">-->
         <!--<div class="grid-stack-item-content" style="overflow: hidden !important;">-->
-            <!-- For Running Simulation-->
+             <!--&lt;!&ndash;For Running Simulation&ndash;&gt;-->
+            <!---->
         <!--</div>-->
     <!--</div>-->
 
@@ -100,6 +109,20 @@
                 <a href="#" id="updateCellView"><img src="assets/img/icons/update.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Update Cell View</span></a>
                 <a href="#" id="resetCamera"><img src="assets/img/icons/camera.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Reset 3D Camera</span></a>
                 <a href="#" id="addHuman" ><img src="assets/img/icons/human.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Add Human</span></a>
+
+
+                <a href="#" id="sumulate" ><img src="assets/img/icons/play.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Play Simulation</span></a>
+                <input type="file" hidden id="file-input" style="visibility: hidden; width: 0px; height: 0px" />
+
+                <a href="#" id="StopSimulation" ><img src="assets/img/icons/stop.png" style="width: 35px; height: 35px;" alt=""/> <span style="display: block ;font-size: 15px;">Stop Simulation</span></a>
+
+
+
+                <div class="main_container" id="id_main_container">
+                    <div class="container_inner" id="display_div_id">
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -143,6 +166,9 @@
 <script src="https://rawgit.com/Wilt/ThreeCSG/develop/ThreeCSG.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+
+<script src="assets/js/ParticleEngine.js"></script>
+<script src="assets/js/ParticleEngineExamples.js"></script>
 
 <script type="module" src="assets/js/init.js"></script>
 
