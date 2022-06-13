@@ -1,9 +1,9 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.122/build/three.module.js";
-import {OrbitControls} from "https://cdn.jsdelivr.net/npm/three@0.114/examples/jsm/controls/OrbitControls.js";
-import {TransformControls} from "https://cdn.jsdelivr.net/npm/three@0.122/examples/jsm/controls/TransformControls.js";
-import {DragControls} from "https://cdn.jsdelivr.net/npm/three@0.114/examples/jsm/controls/DragControls.js";
+import * as THREE from "https://unpkg.com/three@0.122/build/three.module.js";
+import {OrbitControls} from "https://unpkg.com/three@0.114/examples/jsm/controls/OrbitControls.js";
+import {TransformControls} from "https://unpkg.com/three@0.122/examples/jsm/controls/TransformControls.js";
+import {DragControls} from "https://unpkg.com/three@0.114/examples/jsm/controls/DragControls.js";
 // import {OBJLoader} from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
-import { OBJLoader } from 'https://threejs.org/examples/jsm/loaders/OBJLoader.js';
+import { OBJLoader } from 'https://unpkg.com/three@0.114/examples/jsm/loaders/OBJLoader.js';
 
 
 (function ($) {
